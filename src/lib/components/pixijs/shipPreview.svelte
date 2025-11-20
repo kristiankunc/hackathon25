@@ -12,7 +12,7 @@
 			const app = new Application();
 
 			// Initialize the application
-			await app.init({ background: "#1099bb", resizeTo: parent });
+			await app.init({ background: "#0b0408", resizeTo: parent });
 
 			// Append the application canvas to the document body
 			parent.appendChild(app.canvas);
