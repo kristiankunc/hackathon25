@@ -65,7 +65,7 @@
 	<!-- Tlačítko -->
 	<button
 		on:click={submit}
-		class="mt-6 rounded-lg bg-primary px-6 py-3 text-lg font-semibold text-background transition-colors hover:bg-primary-400"
+		class="mt-6 rounded-lg bg-primary px-6 py-3 text-lg font-semibold text-background transition-colors hover:bg-primary-600"
 	>
 		Submit
 	</button>

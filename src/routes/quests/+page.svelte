@@ -14,13 +14,13 @@
 	<div class="w-full max-w-md space-y-4 rounded-sm bg-background-900 p-6 text-background">
 		<button
 			onclick={() => goto("quests/bug-fixing")}
-			class="w-full rounded-sm bg-primary p-4 font-semibold transition-colors hover:bg-primary-400"
+			class="w-full rounded-sm bg-primary p-4 font-semibold transition-colors hover:bg-primary-600"
 		>
 			Bug Fixing Quest
 		</button>
 		<button
 			onclick={() => goto("quests/real-or-fake")}
-			class="w-full rounded-sm bg-primary p-4 font-semibold transition-colors hover:bg-primary-400"
+			class="w-full rounded-sm bg-primary p-4 font-semibold transition-colors hover:bg-primary-600"
 		>
 			Real or Fake
 		</button>
