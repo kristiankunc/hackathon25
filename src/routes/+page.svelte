@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Header from "$lib/components/Header.svelte";
 	import ShipPreview from "$lib/components/pixijs/shipPreview.svelte";
+
+	export let data;
 </script>
 
 <div class="flex h-screen flex-col">
-	<Header />
+	<Header {data}/>
 	<!-- Render area -->
 	<div class="h-full w-screen" id="render-div">
 		<ShipPreview />

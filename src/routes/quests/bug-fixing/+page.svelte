@@ -10,21 +10,31 @@
 
 	const lines = codeSnippet.trim().split("\n");
 
-	function submit() {
+	async function submit() {
 		if (selectedLine === null) {
 			alert("You have to select a line!");
 			return;
 		}
 
 		if (selectedLine === correctLine) {
-			message = `Correct! You earned ${rewardMoney} coins.`; // TODO: Přidat peníze uživateli
+			message = `Správně! Získáváš ${rewardMoney} peněz.`;
+
+            // zavoláme serverovou akci
+            const formData = new FormData();
+            formData.append('amount', String(rewardMoney));
+
+            const res = await fetch('?/addMoney', { method: 'POST', body: formData });
+            const data = await res.json();
+            console.log(data.user); // nový stav peněz z DB
+            // reloadneme stránku, aby se aktualizoval header
+            location.reload();
 		} else {
 			message = `Incorrect!`;
 		}
 	}
 </script>
 
-<Header />
+<Header {data}/>
 <!-- Celá stránka vystředěná -->
 <div class="absolute right-0 bottom-0 -z-10 flex h-screen w-screen flex-col items-center justify-center p-6 text-text">
 	<!-- Nadpis -->
