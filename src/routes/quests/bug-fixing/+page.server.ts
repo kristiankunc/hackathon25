@@ -1,4 +1,6 @@
 import { prisma } from '$lib/prisma';
+import type { Actions } from './$types';
+
 
 export async function load() {
   // načti všechny questy
@@ -41,3 +43,21 @@ if (x = 5) {
     correctLine: randomQuest.correctLine
   };
 }
+
+export const actions: Actions = {
+    addMoney: async ({ request }) => {
+        const form = await request.formData();
+        const amount = Number(form.get('amount') || 0);
+
+        // vezmi demo usera
+        const user = await prisma.user.findFirst();
+        if (!user) throw new Error("User not found");
+
+        const updated = await prisma.user.update({
+            where: { id: user.id },
+            data: { money: user.money + amount }
+        });
+
+        return { user: updated };
+    }
+};

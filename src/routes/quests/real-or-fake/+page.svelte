@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import Header from '$lib/components/Header.svelte';
+import { onMount } from 'svelte';
 
     export let data;
 
@@ -16,7 +17,7 @@
         images = [...correctImages, fakePicture].sort(() => Math.random() - 0.5);
     });
 
-    function submit() {
+    async function submit() {
         if (!selectedImage) {
             alert("Vyber obrázek!");
             return;
@@ -24,14 +25,28 @@
 
         if (selectedImage === fakePicture) {
             message = `Správně! Získáváš ${rewardMoney} peněz.`;
+
+            // zavoláme serverovou akci
+            const formData = new FormData();
+            formData.append('amount', String(rewardMoney));
+
+            const res = await fetch('?/addMoney', { method: 'POST', body: formData });
+            const data = await res.json();
+            console.log(data.user); // nový stav peněz z DB
+            // reloadneme stránku, aby se aktualizoval header
+            location.reload();
+
         } else {
             message = `Špatně!`;
         }
-    }
+    }  
+
 </script>
 
+<Header {data}/>
+
 <div class="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-900 text-white">
-    <h1 class="text-4xl font-bold mb-6 text-center">Real or Fake: {name}</h1>
+    <h1 class="text-4xl font-bold mb-6 text-center">Real or Fake - find AI generated picture: {name}</h1>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 w-full max-w-4xl">
         {#each images as image}

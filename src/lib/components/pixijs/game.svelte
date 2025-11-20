@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { Application, Assets, Container, Sprite, Ticker } from "pixi.js";
-	import Spaceship from "./spaceship";
+	import Spaceship, { slotCoordinates } from "./spaceship";
 
 	const initPixieApp = async () => {
 		const parent = <HTMLDivElement>document.getElementById("render-div");
@@ -61,8 +61,25 @@
 
 			rootContainer.addChild(buttonsContainer);
 
-			const player = await Spaceship.create("friendly");
-			const enemy = await Spaceship.create("enemy");
+			const player = await Spaceship.create("friendly", [
+				{ name: "LASER", position: slotCoordinates.lWing1 },
+				{ name: "MORTAR", position: slotCoordinates.lWing2 },
+				{ name: "STEN", position: slotCoordinates.rWing1 },
+				{ name: "BOW", position: slotCoordinates.rWing2 },
+				{ name: "SKODA_ENGINE", position: slotCoordinates.centerBack },
+				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront }
+			]);
+			const enemy = await Spaceship.create("enemy", [
+				{ name: "LASER", position: slotCoordinates.lWing1 },
+				{ name: "MORTAR", position: slotCoordinates.lWing2 },
+				{ name: "STEN", position: slotCoordinates.rWing1 },
+				{ name: "BOW", position: slotCoordinates.rWing2 },
+				{
+					name: "SKODA_ENGINE",
+					position: slotCoordinates.centerBack
+				},
+				{ name: "MORAVA_SHIELD", position: slotCoordinates.centerFront }
+			]);
 
             parent.addEventListener("keydown", player.keyboardHandler);
 
