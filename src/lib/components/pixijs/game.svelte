@@ -23,7 +23,6 @@
 		return { app, rootContainer: container, parent };
 	};
 
-
 	const createButtons = async (app: Application) => {
 		const buttonsContainer = new Container();
 		buttonsContainer.eventMode = "static";
@@ -81,7 +80,8 @@
 				{ name: "MORAVA_SHIELD", position: slotCoordinates.centerFront }
 			]);
 
-            parent.addEventListener("keydown", player.keyboardHandler);
+			window.addEventListener("keydown", player.keyboardHandler);
+			window.addEventListener("keyup", player.keyboardHandler);
 
 			player.spaceship_sprite.position.x = 325;
 			player.spaceship_sprite.position.y = app.screen.height / 2;
@@ -94,8 +94,14 @@
 
 			// Main loop
 			app.ticker.add((ticker) => {
-                player.move(ticker.deltaTime)
-            });
+				player.move(ticker.deltaTime);
+			});
+
+			// Cleanup on unmount
+			return () => {
+				window.removeEventListener("keydown", player.keyboardHandler);
+				window.removeEventListener("keyup", player.keyboardHandler);
+			};
 		})();
 	});
 </script>
