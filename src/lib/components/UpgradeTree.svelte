@@ -32,7 +32,7 @@
 		x: 445,
 		y: 300,
 		type: "stats",
-		icon: "",
+		icon: "/assets/ship.png",
 		children: [
 			{
 				id: 2,
