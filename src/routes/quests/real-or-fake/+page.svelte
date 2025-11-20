@@ -1,10 +1,20 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+
     export let data;
 
-    const { name, rewardMoney, picturesFilepath, fakePicture, images } = data;
+    const { name, rewardMoney, picturesFilepath } = data;
+    const fakePicture = "the-fake.jpg";
+    const correctImages = ["1.jpg", "2.jpg", "3.jpg"];
 
     let selectedImage: string | null = null;
     let message = "";
+    let images: string[] = [];
+
+    onMount(() => {
+        // spojíme a zamícháme jen jednou při mountu komponenty
+        images = [...correctImages, fakePicture].sort(() => Math.random() - 0.5);
+    });
 
     function submit() {
         if (!selectedImage) {
@@ -25,21 +35,20 @@
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 w-full max-w-4xl">
         {#each images as image}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div
-        class="border-4 rounded-lg overflow-hidden cursor-pointer transition"
-        class:selected={selectedImage === image}
-        on:click={() => selectedImage = image}
-    >
-        <img 
-            src={`${picturesFilepath.replace(/^\/?static/, '')}/${image}`} 
-            alt={image} 
-            class="w-full h-40 object-cover" 
-        />
-    </div>
-{/each}
-
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <div
+                class="border-4 rounded-lg overflow-hidden cursor-pointer transition"
+                class:selected={selectedImage === image}
+                on:click={() => selectedImage = image}
+            >
+                <img 
+                    src={`${picturesFilepath.replace(/^\/?static/, '')}/${image}`} 
+                    alt={image} 
+                    class="w-full h-40 object-cover" 
+                />
+            </div>
+        {/each}
     </div>
 
     <button

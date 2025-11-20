@@ -33,5 +33,4 @@ model RealOrFakeQuest {
   name        String
   rewardMoney Int
   picturesFilepath String
-  fakePicture String
 }
