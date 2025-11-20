@@ -9,3 +9,13 @@ generator client {
 datasource db {
     provider = "sqlite"
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  money     Int
+  points    Int
+
+}
+
