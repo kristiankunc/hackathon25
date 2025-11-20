@@ -32,7 +32,7 @@
 		x: 445,
 		y: 300,
 		type: "stats",
-		icon: "",
+		icon: "/assets/ship.png",
 		children: [
 			{
 				id: 2,
@@ -478,7 +478,7 @@
 				}}
 			>
 				{#if slot.item}
-					<img src={slot.item.icon} alt={`Node ${slot.item.id}`} class="h-8 w-8" />
+					<img src={slot.item.icon} alt={`Node ${slot.item.id}`} class="h-12 w-12 object-contain" />
 				{/if}
 			</div>
 		{/each}
@@ -502,7 +502,7 @@
 				draggable={node.status === "purchased" && node.type === "equipment"}
 				on:dragstart={() => handleDragStart(node)}
 			>
-				{#if node.depth === 1}
+				{#if node.depth === 0 || node.depth === 1}
 					<!-- main tier nodes show icon -->
 					<img src={node.icon} alt={`Node ${node.id}`} class="pointer-events-none h-12 w-12 object-contain" />
 				{:else}
