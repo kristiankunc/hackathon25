@@ -1,43 +1,44 @@
-import { prisma } from '$lib/prisma';
+import fs from "fs";
+import path from "path";
 
-export async function load() {
-    // načti všechny questy
-    let quests = await prisma.bugFixQuest.findMany();
-
-    // pokud databáze neobsahuje žádný quest → vytvoř ho
-    if (quests.length === 0) {
-        const defaultQuest = await prisma.bugFixQuest.create({
-            data: {
-                name: "Nenápadný bug v podmínce",
-                description: "Najdi bug v následujícím řádku kódu. Program nikdy nevstoupí do podmínky, i když by měl. Vyber řádek s chybou.",
-                codeSnippet: `
-if (x = 5) {
-    console.log("X je pět!");
+interface Page {
+    name: string;
+    path: string;
+    children?: Page[];
 }
-`,
-                rewardMoney: 50,
-                correctLine: 0 // řádek s chybou (x = 5 místo x === 5)
-            }
-        });
 
-        // vrať nově vytvořený quest
-        return {
-            name: defaultQuest.name,
-            description: defaultQuest.description,
-            codeSnippet: defaultQuest.codeSnippet,
-            rewardMoney: defaultQuest.rewardMoney,
-            correctLine: defaultQuest.correctLine
-        };
+// rekurzivní čtení složek a souborů v routes
+function readRoutes(dir: string, basePath = ""): Page[] {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    const pages: Page[] = [];
+
+    for (const entry of entries) {
+        if (entry.name.startsWith("+")) continue; // přeskočit +page.svelte, +layout.svelte
+
+        const fullPath = path.join(dir, entry.name);
+
+        if (entry.isDirectory()) {
+            const children = readRoutes(fullPath, path.posix.join(basePath, entry.name));
+            pages.push({
+                name: entry.name,
+                path: "/" + path.posix.join(basePath, entry.name),
+                children: children.length ? children : undefined
+            });
+        } else if (entry.isFile() && entry.name.endsWith(".svelte")) {
+            // ignorujeme +page.svelte v kořeni složky, jen název souboru
+            const name = entry.name.replace(".svelte", "");
+            pages.push({
+                name,
+                path: "/" + path.posix.join(basePath, name)
+            });
+        }
     }
 
-    // pokud questy existují → vyber náhodný
-    const randomQuest = quests[Math.floor(Math.random() * quests.length)];
+    return pages;
+}
 
-    return {
-        name: randomQuest.name,
-        description: randomQuest.description,
-        codeSnippet: randomQuest.codeSnippet,
-        rewardMoney: randomQuest.rewardMoney,
-        correctLine: randomQuest.correctLine
-    };
+export async function load() {
+    const routesDir = path.join(process.cwd(), "src/routes");
+    const pages = readRoutes(routesDir);
+    return { pages };
 }

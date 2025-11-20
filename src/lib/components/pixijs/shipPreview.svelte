@@ -86,7 +86,10 @@
 			const parent = <HTMLDivElement>document.getElementById("render-div");
 			const app = new Application();
 
-			await app.init({ background: "#1099bb", resizeTo: parent });
+			// Initialize the application
+			await app.init({ background: "#0b0408", resizeTo: parent });
+
+			// Append the application canvas to the document body
 			parent.appendChild(app.canvas);
 
 			const container = new Container();
