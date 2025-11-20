@@ -180,19 +180,29 @@ class Spaceship {
 	};
 
 	move(deltaTime: number, screenWidth: number, screenHeight: number) {
-		// Apply movement
+		let xVel = 0;
+		let yVel = 0;
+
 		if (this.movingUp) {
-			this.spaceship_sprite.y -= this.speed * deltaTime;
+			yVel -= this.speed * deltaTime;
 		}
 		if (this.movingDown) {
-			this.spaceship_sprite.y += this.speed * deltaTime;
+			yVel += this.speed * deltaTime;
 		}
 		if (this.movingLeft) {
-			this.spaceship_sprite.x -= this.speed * deltaTime;
+			xVel -= this.speed * deltaTime;
 		}
 		if (this.movingRight) {
-			this.spaceship_sprite.x += this.speed * deltaTime;
+			xVel += this.speed * deltaTime;
 		}
+
+		if (Math.sqrt(xVel**2 + yVel**2) > this.speed) {
+			xVel *= Math.cos(Math.PI/4);
+			yVel *= Math.sin(Math.PI/4);
+		}
+
+		this.spaceship_sprite.x += xVel
+		this.spaceship_sprite.y += yVel
 
 		// Enforce screen bounds - no going outside
 		if (this.spaceship_sprite.x < 150) {
@@ -207,6 +217,10 @@ class Spaceship {
 		if (this.spaceship_sprite.y > screenHeight - 140) {
 			this.spaceship_sprite.y = screenHeight - 140;
 		}
+	}
+
+	getCenterPos() {
+		return {x: this.spaceship_sprite.x, y: this.spaceship_sprite.y}
 	}
 }
 
