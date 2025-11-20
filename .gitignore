@@ -27,3 +27,4 @@ vite.config.ts.timestamp-*
 /prisma/generated/prisma
 
 dev.db
+package-lock.json
