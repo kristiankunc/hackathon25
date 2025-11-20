@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-
 	type NodeStatus = "locked" | "purchased";
 
 	interface Node {
@@ -119,10 +117,6 @@
 		hoveredNode = null;
 	}
 
-	function handleClick(node: Node) {
-		if (node.status !== "locked") goto(`/game/${node.id}`);
-	}
-
 	function handleDragStart(node: Node) {
 		draggingNode = node;
 	}
@@ -172,7 +166,6 @@
 				style="width: {NODE_RADIUS * 2}px; height: {NODE_RADIUS * 2}px; left: {node.x}px; top: {node.y}px;"
 				on:mouseenter={() => handleHover(node)}
 				on:mouseleave={clearHover}
-				on:click={() => handleClick(node)}
 				draggable={node.status !== "locked"}
 				on:dragstart={() => handleDragStart(node)}
 			>

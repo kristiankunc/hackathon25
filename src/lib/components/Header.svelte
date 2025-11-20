@@ -1,29 +1,25 @@
-<header class="bg-gray-800 text-white">
-	<div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+<header class="static top-0 right-0 left-0 bg-background text-text">
+	<div class="flex items-center justify-between px-4 py-4">
 		<a href="/" class="text-xl font-bold">MySite</a>
 
-		<nav class="flex gap-6">
-			<a href="/" class="transition-colors hover:text-blue-600">Link 1</a>
-			<a href="/npm i unplugin-icons" class="transition-colors hover:text-blue-600">Link 2</a>
+		<nav class="flex gap-8">
+			<a href="/" class="transition-colors hover:text-accent">Link 1</a>
+			<a href="/" class="transition-colors hover:text-accent">Link 2</a>
 		</nav>
 
-		<div class="flex items-center gap-4 text-gray-900">
-			<div class="flex items-center rounded-full bg-yellow-500 px-3 py-1 shadow-sm">
-				<img src="/icons/coin.png" alt="Coin" class="mr-1 h-5 w-5" />
+		<div class="flex items-center gap-4 text-background">
+			<div class="flex h-8 items-center gap-1 rounded-full bg-linear-90 from-yellow-400 to-yellow-300 px-3 py-1">
+				<span class="material-symbols-outlined text-background">paid</span>
 				<span class="text-sm font-semibold">567</span>
 			</div>
-			<div class="flex items-center rounded-full bg-linear-to-r from-yellow-400 to-yellow-300 px-3 py-1 shadow-sm">
+			<div class="flex h-8 items-center rounded-full bg-primary px-3 py-1">
 				<div class="flex items-center gap-1 text-sm">
 					<span class="leading-none font-semibold">1,234</span>
-					<span class="text-xs">points</span>
+					<span class="text-xs">pts</span>
 				</div>
 			</div>
 
-			<div class="cta">
-				<a href="/profile" aria-label="Profile" class="transition-colors hover:text-blue-600">
-					<img src="/icons/user.svg" alt="Profile" class="h-8 w-8 rounded-full" />
-				</a>
-			</div>
+			<a href="/profile" aria-label="Profile" class="material-symbols-outlined text-text"> person </a>
 		</div>
 	</div>
 </header>
