@@ -58,6 +58,18 @@ const spritesData = {
 	}
 };
 
+export const buttonSprites = {
+	SIX: {
+		texturePath: "/assets/buttons/6.avif"
+	},
+	METRO: {
+		texturePath: "/assets/buttons/metro.jpg"
+	},
+	ROBBER: {
+		texturePath: "/assets/buttons/robber.jpg"
+	}
+};
+
 export const slotCoordinates = {
 	lWing1: { x: 75, y: 115 },
 	lWing2: { x: 130, y: 200 },
@@ -72,7 +84,7 @@ export const slotCoordinates = {
 
 const spriteScaler = 2;
 
-interface ShipAttachment {
+export interface ShipAttachment {
 	position: (typeof slotCoordinates)[keyof typeof slotCoordinates];
 	name: keyof typeof spritesData;
 }

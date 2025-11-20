@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { Application, Assets, Container, Sprite, Ticker } from "pixi.js";
-	import Spaceship, { slotCoordinates } from "./spaceship";
+	import Spaceship, { buttonSprites, slotCoordinates, type ShipAttachment } from "./spaceship";
 
 	const initPixieApp = async () => {
 		const parent = <HTMLDivElement>document.getElementById("render-div");
@@ -28,23 +28,34 @@
 		return { app, rootContainer: container, parent };
 	};
 
-	const createButtons = async (app: Application) => {
+	const createButtons = async (app: Application, friendlyLoadout: ShipAttachment[]) => {
 		const buttonsContainer = new Container();
 		buttonsContainer.eventMode = "static";
 
-		const shieldTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/19031/19031173.png");
-		const shieldButton = new Sprite(shieldTexture);
+		// shield attachments
+		const shieldAttachments: ShipAttachment[] = friendlyLoadout.filter(
+			(attachment) => attachment && attachment.name && attachment.name.endsWith("_SHIELD")
+		);
 
-		const machinegunTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/7445/7445348.png");
-		const machinegunButton = new Sprite(machinegunTexture);
+		const buttons = [];
 
-		const laserTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/7421/7421037.png");
-		const laserButton = new Sprite(laserTexture);
+		for (const attachment of shieldAttachments) {
+			if (!attachment || !attachment.name) continue;
 
-		const speedTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/8146/8146004.png");
-		const speedButton = new Sprite(speedTexture);
+			switch (attachment.name) {
+				case "MORAVA_SHIELD":
+					break;
+				case "CECHY_SHIELD":
+					buttons.push(new Sprite(await Assets.load(buttonSprites.METRO.texturePath)));
+					break;
+				case "SLEZSKO_SHIELD":
+					buttons.push(new Sprite(await Assets.load(buttonSprites.ROBBER.texturePath)));
+					break;
+				case "SLOVENSKO_SHIELD":
+					buttons.push(new Sprite(await Assets.load(buttonSprites.SIX.texturePath)));
+			}
+		}
 
-		const buttons = [shieldButton, machinegunButton, laserButton, speedButton];
 		for (let i = 0; i < buttons.length; i++) {
 			buttons[i].setSize(90);
 			buttons[i].position.x = buttons[i].width * i;
@@ -61,18 +72,33 @@
 	onMount(async () => {
 		(async () => {
 			const { app, rootContainer, parent } = await initPixieApp();
-			const buttonsContainer = await createButtons(app);
 
-			rootContainer.addChild(buttonsContainer);
-
-			const player = await Spaceship.create("friendly", [
+			const friendlyLoadout: ShipAttachment[] = [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
 				{ name: "STEN", position: slotCoordinates.rWing1 },
 				{ name: "BOW", position: slotCoordinates.rWing2 },
 				{ name: "SKODA_ENGINE", position: slotCoordinates.centerBack },
-				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront }
-			]);
+				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront },
+				{
+					name: "SLOVENSKO_SHIELD",
+					position: slotCoordinates.centerBack
+				},
+				{
+					name: "MORAVA_SHIELD",
+					position: slotCoordinates.centerMid
+				},
+				{
+					name: "SLEZSKO_SHIELD",
+					position: slotCoordinates.engine1
+				}
+			];
+
+			const buttonsContainer = await createButtons(app, friendlyLoadout);
+
+			rootContainer.addChild(buttonsContainer);
+
+			const player = await Spaceship.create("friendly", friendlyLoadout);
 			const enemy = await Spaceship.create("enemy", [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
