@@ -23,13 +23,13 @@
 			const formData = new FormData();
 			formData.append("amount", String(rewardMoney));
 
-            const res = await fetch('?/addMoney', { method: 'POST', body: formData });
-            const data = await res.json();
-            console.log(data.user); // nový stav peněz z DB
-            // reloadneme stránku, aby se aktualizoval header
-            setTimeout(() => {
-                location.reload();
-            }, 2000);
+			const res = await fetch("?/addMoney", { method: "POST", body: formData });
+			const data = await res.json();
+			console.log(data.user); // nový stav peněz z DB
+			// reloadneme stránku, aby se aktualizoval header
+			setTimeout(() => {
+				location.reload();
+			}, 2000);
 		} else {
 			message = `Incorrect!`;
 		}
@@ -38,7 +38,7 @@
 
 <Header {data} />
 <!-- Celá stránka vystředěná -->
-<div class="flex w-screen flex-col items-center justify-center p-6 text-text my-10">
+<div class="my-10 flex w-screen flex-col items-center justify-center p-6 text-text">
 	<!-- Nadpis -->
 	<h1 class="mb-8 text-center text-4xl font-bold">
 		Quest: {name}
@@ -67,7 +67,7 @@
 	<!-- Tlačítko -->
 	<button
 		on:click={submit}
-		class="mt-6 rounded-lg bg-primary px-6 py-3 text-lg font-semibold text-background transition-colors hover:bg-primary-600"
+		class="mt-6 rounded-sm bg-primary px-6 py-3 text-lg font-semibold text-background transition-colors hover:bg-primary-600"
 	>
 		Submit
 	</button>
