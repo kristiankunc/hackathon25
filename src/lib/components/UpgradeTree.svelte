@@ -1,9 +1,14 @@
 <script lang="ts">
 	type NodeStatus = "locked" | "purchased";
+	type UpgradeType = "equipment" | "stats";
+	type EquipmentType = "engine" | "shield" | "gun" | "turret";
 
 	interface Node {
 		id: number;
 		status: NodeStatus;
+		type: UpgradeType;
+		itemType?: EquipmentType;
+		icon: string;
 		x: number;
 		y: number;
 		children?: Node[];
@@ -13,6 +18,7 @@
 		id: string;
 		x: number;
 		y: number;
+		type: EquipmentType;
 		item: Node | null;
 	}
 
@@ -25,40 +31,50 @@
 		status: "purchased",
 		x: 100,
 		y: 100,
+		type: "stats",
+		icon: "",
 		children: [
 			{
 				id: 2,
 				status: "purchased",
+				type: "stats",
+				icon: "",
 				x: 250,
 				y: 50,
 				children: [
 					{
 						id: 4,
-						status: "locked",
+						status: "purchased",
+						type: "equipment",
+						itemType: "shield",
+						icon: "/assets/shields/cechy.webp",
 						x: 400,
 						y: 50,
 						children: [
-							{ id: 7, status: "locked", x: 550, y: 50 },
-							{ id: 8, status: "locked", x: 650, y: 125 }
+							{ id: 7, status: "purchased", type: "equipment", itemType: "shield", icon: "/assets/shields/morava.webp", x: 550, y: 50 },
+							{ id: 8, status: "locked", type: "equipment", itemType: "shield", icon: "/assets/shields/slezsko.webp", x: 650, y: 125 }
 						]
 					},
-					{ id: 5, status: "locked", x: 400, y: 150 }
+					{ id: 5, status: "purchased", type: "equipment", itemType: "gun", icon: "/assets/guns/laser.png", x: 400, y: 150 }
 				]
 			},
 			{
 				id: 3,
-				status: "locked",
+				status: "purchased",
+				type: "equipment",
+				itemType: "engine",
+				icon: "/assets/engines/skoda.webp",
 				x: 250,
 				y: 150,
-				children: [{ id: 6, status: "locked", x: 400, y: 250 }]
+				children: [{ id: 6, status: "locked", type: "equipment", itemType: "engine", icon: "/assets/engines/steam.webp", x: 400, y: 250 }]
 			}
 		]
 	};
 
 	let slots: Slot[] = [
-		{ id: "slot1", x: 120, y: 50, item: null },
-		{ id: "slot2", x: 250, y: 100, item: null },
-		{ id: "slot3", x: 80, y: 200, item: null }
+		{ id: "slot1", x: 120, y: 50, type: "engine", item: null },
+		{ id: "slot2", x: 320, y: 50, type: "shield", item: null },
+		{ id: "slot3", x: 120, y: 200, type: "gun", item: null }
 	];
 
 	let allNodes: Node[] = [];
@@ -118,7 +134,9 @@
 	}
 
 	function handleDragStart(node: Node) {
-		draggingNode = node;
+		if (node.type === "equipment" && node.status === "purchased") {
+			draggingNode = node;
+		}
 	}
 
 	$: containerWidth = Math.max(...allNodes.map((n) => n.x)) + NODE_RADIUS + 20;
@@ -127,7 +145,7 @@
 
 <div class="flex items-start justify-center gap-8">
 	<div class="relative" style="width: 400px; height: 300px;">
-		<img src="/images/spaceship.png" alt="Spaceship" class="h-full w-full object-contain" />
+		<img src="/assets/ship.png" alt="Spaceship" class="h-full w-full object-contain" />
 
 		{#each slots as slot, i}
 			<div
@@ -137,15 +155,16 @@
 				tabindex="0"
 				on:dragover={(e) => e.preventDefault()}
 				on:drop={() => {
-					if (draggingNode) {
-						// Make a new slots array to trigger reactivity
-						slots = slots.map((s, idx) => (idx === i ? { ...s, item: draggingNode } : s));
-						draggingNode = null;
+					if (draggingNode && draggingNode.type === "equipment") {
+						if (slot.type === draggingNode.itemType) {
+							slots = slots.map((s, idx) => (idx === i ? { ...s, item: draggingNode } : s));
+						}
 					}
+					draggingNode = null;
 				}}
 			>
 				{#if slot.item}
-					<img src={`/icons/${slot.item.id}.png`} alt={`Node ${slot.item.id}`} class="h-8 w-8" />
+					<img src={slot.item.icon} alt={`Node ${slot.item.id}`} class="h-8 w-8" />
 				{/if}
 			</div>
 		{/each}
@@ -166,10 +185,10 @@
 				style="width: {NODE_RADIUS * 2}px; height: {NODE_RADIUS * 2}px; left: {node.x}px; top: {node.y}px;"
 				on:mouseenter={() => handleHover(node)}
 				on:mouseleave={clearHover}
-				draggable={node.status !== "locked"}
+				draggable={node.status === "purchased" && node.type === "equipment"}
 				on:dragstart={() => handleDragStart(node)}
 			>
-				{node.id}
+				<img src={node.icon} alt={`Node ${node.id}`} class="pointer-events-none h-12 w-12 object-contain" />
 			</button>
 		{/each}
 
@@ -179,7 +198,11 @@
 				style="left: {modalPos.x}px; top: {modalPos.y}px; transform: translate(-50%, 0);"
 			>
 				<strong>Node {hoveredNode.id}</strong><br />
-				Status: {hoveredNode.status}
+				Status: {hoveredNode.status}<br />
+				Type: {hoveredNode.type}<br />
+				{#if hoveredNode.itemType}
+					Item: {hoveredNode.itemType}
+				{/if}
 			</div>
 		{/if}
 	</div>
