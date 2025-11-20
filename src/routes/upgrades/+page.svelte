@@ -1,9 +1,11 @@
 <script lang="ts">
 	import Header from "$lib/components/Header.svelte";
 	import UpgradeTree from "$lib/components/UpgradeTree.svelte";
+
+	export let data;
 </script>
 
-<Header />
+<Header {data}/>
 <main class="mx-auto max-w-7xl px-4 py-6">
 	<h1 class="mb-4 text-3xl font-bold text-text">Upgrade Page</h1>
 	<p class="mb-4 text-lg text-text">Welcome to the upgrade page. Here you can find options to enhance your experience.</p>
