@@ -70,9 +70,17 @@ class Spaceship {
 		this.sprites = sprites;
 	}
 
-	static async create(): Promise<Spaceship> {
+	static async create(type: "friendly" | "enemy"): Promise<Spaceship> {
 		const spaceship_texture = await Assets.load("/assets/ship.png");
 		const spaceship_sprite = new Sprite(spaceship_texture);
+
+		// set pivot to center
+		spaceship_sprite.pivot.x = spaceship_texture.width / 2;
+		spaceship_sprite.pivot.y = spaceship_texture.height / 2;
+
+		if (type === "friendly") {
+			spaceship_sprite.scale.x = -1;
+		}
 
 		const sprites: Sprite[] = [];
 
