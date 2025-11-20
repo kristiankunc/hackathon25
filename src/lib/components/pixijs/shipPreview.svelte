@@ -1,49 +1,53 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    // description: This example demonstrates how to use a Container to group and manipulate multiple sprites
-    import { Application, Assets, Container, Sprite } from 'pixi.js';
+	import { onMount } from "svelte";
+	// description: This example demonstrates how to use a Container to group and manipulate multiple sprites
+	import { Application, Assets, Container, Sprite } from "pixi.js";
 
-onMount(async () => { (async () => {
-  // Create a new application
-  const app = new Application();
+	onMount(async () => {
+		(async () => {
+			const parent = <HTMLDivElement>document.getElementById("render-div");
+			console.log(parent);
 
-  // Initialize the application
-  await app.init({ background: '#1099bb', resizeTo: window });
+			// Create a new application
+			const app = new Application();
 
-  // Append the application canvas to the document body
-  document.body.appendChild(app.canvas);
+			// Initialize the application
+			await app.init({ background: "#1099bb", resizeTo: parent });
 
-  // Create and add a container to the stage
-  const container = new Container();
+			// Append the application canvas to the document body
+			parent.appendChild(app.canvas);
 
-  app.stage.addChild(container);
+			// Create and add a container to the stage
+			const container = new Container();
 
-  // Load the bunny texture
-  const texture = await Assets.load('https://pixijs.com/assets/bunny.png');
+			app.stage.addChild(container);
 
-  // Create a 5x5 grid of bunnies in the container
-  for (let i = 0; i < 25; i++) {
-    const bunny = new Sprite(texture);
+			// Load the bunny texture
+			const texture = await Assets.load("https://pixijs.com/assets/bunny.png");
 
-    bunny.x = (i % 5) * 40;
-    bunny.y = Math.floor(i / 5) * 40;
-    container.addChild(bunny);
-  }
+			// Create a 5x5 grid of bunnies in the container
+			for (let i = 0; i < 25; i++) {
+				const bunny = new Sprite(texture);
 
-  // Move the container to the center
-  container.x = app.screen.width / 2;
-  container.y = app.screen.height / 2;
+				bunny.x = (i % 5) * 40;
+				bunny.y = Math.floor(i / 5) * 40;
+				container.addChild(bunny);
+			}
 
-  // Center the bunny sprites in local container coordinates
-  container.pivot.x = container.width / 2;
-  container.pivot.y = container.height / 2;
+			// Move the container to the center
+			container.x = app.screen.width / 2;
+			container.y = app.screen.height / 2;
 
-  // Listen for animate update
-  app.ticker.add((time) => {
-    // Continuously rotate the container!
-    // * use delta to create frame-independent transform *
-    container.rotation -= 0.01 * time.deltaTime;
-  });
-})();})
+			// Center the bunny sprites in local container coordinates
+			container.pivot.x = container.width / 2;
+			container.pivot.y = container.height / 2;
 
+			// Listen for animate update
+			app.ticker.add((time) => {
+				// Continuously rotate the container!
+				// * use delta to create frame-independent transform *
+				container.rotation -= 0.01 * time.deltaTime;
+			});
+		})();
+	});
 </script>

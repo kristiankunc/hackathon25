@@ -35,6 +35,8 @@
 		"@prisma/adapter-better-sqlite3": "^7.0.0",
 		"@prisma/client": "^7.0.0",
 		"dotenv": "^17.2.3",
+		"socket.io": "^4.8.1",
+		"socket.io-client": "^4.8.1",
 		"pixi.js": "^8.14.3"
 	}
 }
