@@ -11,14 +11,49 @@ export async function load() {
     const defaultQuest = await prisma.bugFixQuest.create({
       data: {
         name: "Hidden bug in a condition",
-        description: "Find a bug in the following code snippet. Select the line that causes an error.",
+        description: "The following snippet simulates a very simple job queue runner. However, under certain conditions, the runner never finishes — it enters an infinite loop even when all jobs should be processed. Find the line that causes the queue to never empty. The issue is subtle and caused by a wrong loop condition combined with an unexpected mutation inside the loop.",
         codeSnippet: `
-if (x = 5) {
-    console.log("X is 5!");
+function runJobQueue(queue) {
+    let processed = 0;
+
+    // runner should process items until the queue is empty
+    while (queue.length >= 0) {
+        const job = queue.shift();
+
+        if (!job) {
+            console.log("No job found, skipping...");
+            continue;
+        }
+
+        console.log("Running job:", job.name);
+
+        if (job.retries > 0) {
+            job.retries--;
+            queue.push(job);  // requeue job with fewer retries
+        }
+
+        processed++;
+
+        if (processed > 50) {
+            console.log("Safety break!");
+            break;
+        }
+    }
+
+    return processed;
 }
+
+const jobs = [
+    { name: "A", retries: 1 },
+    { name: "B", retries: 2 },
+    { name: "C", retries: 0 }
+];
+
+runJobQueue(jobs);
+
 `,
         rewardMoney: 50,
-        correctLine: 0 // řádek s chybou (x = 5 místo x === 5)
+        correctLine: 4 // řádek s chybou (x = 5 místo x === 5)
       }
     });
 

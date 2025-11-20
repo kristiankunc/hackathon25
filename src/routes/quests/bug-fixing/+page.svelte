@@ -23,11 +23,13 @@
 			const formData = new FormData();
 			formData.append("amount", String(rewardMoney));
 
-			const res = await fetch("?/addMoney", { method: "POST", body: formData });
-			const data = await res.json();
-			console.log(data.user); // nový stav peněz z DB
-			// reloadneme stránku, aby se aktualizoval header
-			location.reload();
+            const res = await fetch('?/addMoney', { method: 'POST', body: formData });
+            const data = await res.json();
+            console.log(data.user); // nový stav peněz z DB
+            // reloadneme stránku, aby se aktualizoval header
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
 		} else {
 			message = `Incorrect!`;
 		}
@@ -36,7 +38,7 @@
 
 <Header {data} />
 <!-- Celá stránka vystředěná -->
-<div class="absolute right-0 bottom-0 -z-10 flex h-screen w-screen flex-col items-center justify-center p-6 text-text">
+<div class="flex w-screen flex-col items-center justify-center p-6 text-text my-10">
 	<!-- Nadpis -->
 	<h1 class="mb-8 text-center text-4xl font-bold">
 		Quest: {name}

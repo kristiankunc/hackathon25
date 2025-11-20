@@ -8,7 +8,7 @@
 		<a href="/" class="text-xl font-bold">MySite</a>
 
 		<nav class="absolute left-1/2 z-10 flex -translate-x-1/2 justify-center gap-4">
-			<a href="/" class="transition-colors hover:text-accent">Link 1</a>
+			<a href="/quests" class="transition-colors hover:text-accent">Quests</a>
 			<a href="/" class="transition-colors hover:text-accent">Link 2</a>
 		</nav>
 
