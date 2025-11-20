@@ -27,6 +27,7 @@
 			app.stage.addChild(container);
 
 			const texture = await Assets.load("/assets/ship.png");
+			const laserTexture = await Assets.load("/assets/guns/laser.png");
 
 			const mySpaceship = new Sprite(texture);
 			container.addChild(mySpaceship);
@@ -49,17 +50,16 @@
 				centerBack: { x: 50, y: 0 }
 			};
 
-			// renver a basic green circle at each slot coordinate for debugging
 			for (const slot in slotCoordinates) {
-				const coord = slotCoordinates[slot];
-				const graphics = new Graphics().rect(0, 0, 5, 5);
-				graphics.beginFill(0x00ff00);
-				graphics.drawCircle(0, 0, 5);
-				graphics.endFill();
+				const coord = slotCoordinates[slot as keyof typeof slotCoordinates];
+				const laser = new Sprite(laserTexture);
+				laser.anchor.set(0.5);
+				laser.scale.set(0.1);
+				laser.scale.x *= Math.sign(mySpaceship.scale.x);
 				// Convert relative coordinates to screen coordinates, accounting for scale and flip
-				graphics.x = mySpaceship.x + coord.x * mySpaceship.scale.x;
-				graphics.y = mySpaceship.y + coord.y * mySpaceship.scale.y;
-				container.addChild(graphics);
+				laser.x = mySpaceship.x + coord.x * mySpaceship.scale.x;
+				laser.y = mySpaceship.y + coord.y * mySpaceship.scale.y;
+				container.addChild(laser);
 			}
 
 			// duplicate the spaceship sprite and flip it horizontally to represent an enemy ship
@@ -71,15 +71,15 @@
 			enemySpaceship.y = app.renderer.height / 2;
 
 			for (const slot in slotCoordinates) {
-				const coord = slotCoordinates[slot];
-				const graphics = new Graphics().rect(0, 0, 5, 5);
-				graphics.beginFill(0xff0000);
-				graphics.drawCircle(0, 0, 5);
-				graphics.endFill();
+				const coord = slotCoordinates[slot as keyof typeof slotCoordinates];
+				const laser = new Sprite(laserTexture);
+				laser.anchor.set(0.5);
+				laser.scale.set(0.1);
+
 				// Convert relative coordinates to screen coordinates, accounting for scale and flip
-				graphics.x = enemySpaceship.x + coord.x * enemySpaceship.scale.x;
-				graphics.y = enemySpaceship.y + coord.y * enemySpaceship.scale.y;
-				container.addChild(graphics);
+				laser.x = enemySpaceship.x + coord.x * enemySpaceship.scale.x;
+				laser.y = enemySpaceship.y + coord.y * enemySpaceship.scale.y;
+				container.addChild(laser);
 			}
 
 			app.ticker.add(() => {
