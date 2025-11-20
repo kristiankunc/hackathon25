@@ -2,4 +2,6 @@
     import Game from "$lib/components/pixijs/game.svelte";
 </script>
 
-<Game></Game>
+<div class="static z-0 h-screen w-screen" id="render-div">
+		<Game/>
+</div>
