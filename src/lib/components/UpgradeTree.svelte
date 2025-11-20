@@ -478,7 +478,7 @@
 				}}
 			>
 				{#if slot.item}
-					<img src={slot.item.icon} alt={`Node ${slot.item.id}`} class="h-8 w-8" />
+					<img src={slot.item.icon} alt={`Node ${slot.item.id}`} class="h-12 w-12 object-contain" />
 				{/if}
 			</div>
 		{/each}
