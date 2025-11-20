@@ -31,7 +31,7 @@
 </script>
 
 <div class="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-900 text-white">
-    <h1 class="text-4xl font-bold mb-6 text-center">Real or Fake: {name}</h1>
+    <h1 class="text-4xl font-bold mb-6 text-center">Real or Fake - find AI generated picture: {name}</h1>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 w-full max-w-4xl">
         {#each images as image}
