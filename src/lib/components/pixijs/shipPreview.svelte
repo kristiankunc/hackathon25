@@ -27,6 +27,13 @@
 			invert: false,
 			texture: null as SpriteOptions | null
 		},
+		MORTAR: {
+			texturePath: "/assets/guns/mortar.png",
+			scale: 0.075,
+			invert: true,
+			texture: null as SpriteOptions | null
+		},
+
 		STEAM_ENGINE: {
 			texturePath: "/assets/engines/steam.webp",
 			scale: 0.04,
@@ -137,7 +144,10 @@
 			const slotKeys = Object.keys(slotCoordinates) as Array<keyof typeof slotCoordinates>;
 			const spriteKeys = Object.keys(sprites).filter((key) => key !== "SPACESHIP" && key !== "LASER") as Array<keyof typeof sprites>;
 
-			spriteKeys.forEach((spriteKey, index) => {
+			// Shuffle sprite keys for random order
+			const shuffledSpriteKeys = [...spriteKeys].sort(() => Math.random() - 0.5);
+
+			shuffledSpriteKeys.forEach((spriteKey, index) => {
 				const spriteInfo = sprites[spriteKey];
 				const slot = slotKeys[index % slotKeys.length];
 				const coord = slotCoordinates[slot];
