@@ -2,8 +2,13 @@
 	import Header from "$lib/components/Header.svelte";
 	import "./layout.css";
 	import favicon from "$lib/assets/favicon.svg";
+	import { onMount } from "svelte";
 
 	let { children } = $props();
+
+	onMount(() => {
+		document.body.classList.add("bg-background");
+	});
 </script>
 
 <svelte:head>

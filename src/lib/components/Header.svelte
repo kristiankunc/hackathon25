@@ -1,4 +1,4 @@
-<header class="static top-0 right-0 left-0 bg-background text-text">
+<header class="w-screen bg-background text-text">
 	<div class="flex items-center justify-between px-4 py-4">
 		<a href="/" class="text-xl font-bold">MySite</a>
 
