@@ -4,7 +4,7 @@ const spritesData = {
 	LASER: {
 		texturePath: "/assets/guns/laser.png",
 		scale: 0.1,
-		invert: false
+		invert: true
 	},
 	MORTAR: {
 		texturePath: "/assets/guns/mortar.png",
@@ -18,7 +18,7 @@ const spritesData = {
 	},
 	BOW: {
 		texturePath: "/assets/guns/bow.png",
-		scale: 0.1,
+		scale: 0.07,
 		invert: true
 	},
 	STEAM_ENGINE: {
@@ -38,7 +38,7 @@ const spritesData = {
 	},
 	MORAVA_SHIELD: {
 		texturePath: "/assets/shields/morava.webp",
-		scale: 0.05,
+		scale: 0.06,
 		invert: false
 	},
 	CECHY_SHIELD: {
@@ -69,6 +69,8 @@ export const slotCoordinates = {
 	centerMid: { x: -100, y: 0 },
 	centerBack: { x: 200, y: 0 }
 };
+
+const spriteScaler = 2;
 
 interface ShipAttachment {
 	position: (typeof slotCoordinates)[keyof typeof slotCoordinates];
@@ -106,6 +108,9 @@ class Spaceship {
 				sprite.scale.x *= -1;
 			}
 
+			sprite.scale.x *= spriteScaler;
+			sprite.scale.y *= spriteScaler;
+
 			// Position relative to spaceship center, accounting for the pivot offset
 			sprite.position.set(offsetX + attachment.position.x, offsetY + attachment.position.y);
 
@@ -118,14 +123,16 @@ class Spaceship {
 		const spaceship_texture = await Assets.load("/assets/ship.png");
 		const spaceship_sprite = new Sprite(spaceship_texture);
 
+		// scale the ship down a little
+		spaceship_sprite.scale.set(0.5);
+
 		spaceship_sprite.pivot.x = spaceship_texture.width / 2;
 		spaceship_sprite.pivot.y = spaceship_texture.height / 2;
 
 		if (type === "friendly") {
-			spaceship_sprite.scale.x = -1;
+			spaceship_sprite.scale.x = -Math.abs(spaceship_sprite.scale.x);
 		}
 
-		// Only create sprites that are needed
 		const sprites = new Map<string, Sprite>();
 
 		for (const attachment of config) {
