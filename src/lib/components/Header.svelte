@@ -3,7 +3,7 @@
 	const { user } = data;
 </script>
 
-<header class="w-screen bg-background text-text">
+<header class="w-screen bg-background-950 text-text">
 	<div class="flex w-full items-center justify-between px-4 py-4">
 		<a href="/" class="text-xl font-bold">MySite</a>
 

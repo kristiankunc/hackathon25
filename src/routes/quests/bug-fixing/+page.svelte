@@ -19,9 +19,9 @@
 		if (selectedLine === correctLine) {
 			message = `Správně! Získáváš ${rewardMoney} peněz.`;
 
-            // zavoláme serverovou akci
-            const formData = new FormData();
-            formData.append('amount', String(rewardMoney));
+			// zavoláme serverovou akci
+			const formData = new FormData();
+			formData.append("amount", String(rewardMoney));
 
             const res = await fetch('?/addMoney', { method: 'POST', body: formData });
             const data = await res.json();
@@ -36,7 +36,7 @@
 	}
 </script>
 
-<Header {data}/>
+<Header {data} />
 <!-- Celá stránka vystředěná -->
 <div class="flex w-screen flex-col items-center justify-center p-6 text-text my-10">
 	<!-- Nadpis -->
@@ -50,15 +50,15 @@
 	</p>
 
 	<!-- Řádky kódu -->
-	<div class="w-full max-w-2xl space-y-1 rounded bg-background-900 p-4 text-text shadow-xl">
+	<div class="w-full max-w-2xl space-y-1 rounded bg-background-950 p-4 text-text">
 		{#each lines as line, i}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
-				class="cursor-pointer rounded border border-transparent whitespace-pre transition {selectedLine == i ? 'bg-background-800' : ''}"
+				class="cursor-pointer rounded border border-transparent whitespace-pre transition {selectedLine == i ? 'bg-background-900' : ''}"
 				on:click={() => (selectedLine = i)}
 			>
-				<span class="px-2 text-text-600">{i + 1}.</span>
+				<span class="px-2 text-text-600">{i + 1}</span>
 				{line}
 			</div>
 		{/each}
