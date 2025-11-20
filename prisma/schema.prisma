@@ -19,3 +19,11 @@ model User {
 
 }
 
+model BugFixQuest {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  codeSnippet String
+  rewardMoney Int
+  correctLine Int
+}
