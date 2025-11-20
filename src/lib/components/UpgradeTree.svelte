@@ -502,7 +502,7 @@
 				draggable={node.status === "purchased" && node.type === "equipment"}
 				on:dragstart={() => handleDragStart(node)}
 			>
-				{#if node.depth === 1}
+				{#if node.depth === 0 || node.depth === 1}
 					<!-- main tier nodes show icon -->
 					<img src={node.icon} alt={`Node ${node.id}`} class="pointer-events-none h-12 w-12 object-contain" />
 				{:else}
