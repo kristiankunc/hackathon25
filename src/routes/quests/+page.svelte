@@ -4,7 +4,7 @@
 </script>
 
 <Header />
-<div class="absolute right-0 bottom-0 -z-10 flex h-full w-full flex-col items-center justify-center p-6 text-text">
+<div class="absolute right-0 bottom-0 -z-10 flex h-screen w-screen flex-col items-center justify-center p-6 text-text">
 	<!-- Nadpis -->
 	<h1 class="mb-8 text-center text-5xl font-bold">Quests</h1>
 

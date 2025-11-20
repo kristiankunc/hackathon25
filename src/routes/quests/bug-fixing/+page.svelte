@@ -1,72 +1,67 @@
 <script lang="ts">
-    export let data;
+	import Header from "$lib/components/Header.svelte";
 
-    const { name, description, codeSnippet, correctLine, rewardMoney } = data;
+	export let data;
 
-    let selectedLine: number | null = null;
-    let message = "";
+	const { name, description, codeSnippet, correctLine, rewardMoney } = data;
 
-    const lines = codeSnippet.trim().split('\n');
+	let selectedLine: number | null = null;
+	let message = "";
 
-    function submit() {
-        if (selectedLine === null) {
-            alert("Musíš vybrat řádek!");
-            return;
-        }
+	const lines = codeSnippet.trim().split("\n");
 
-        if (selectedLine === correctLine) {
-            message = `Správně! Získáváš ${rewardMoney} peněz.`; // TODO: Přidat peníze uživateli
-        } else {
-            message = `Špatně!`;
-        }
-    }
+	function submit() {
+		if (selectedLine === null) {
+			alert("You have to select a line!");
+			return;
+		}
+
+		if (selectedLine === correctLine) {
+			message = `Correct! You earned ${rewardMoney} coins.`; // TODO: Přidat peníze uživateli
+		} else {
+			message = `Incorrect!`;
+		}
+	}
 </script>
 
+<Header />
 <!-- Celá stránka vystředěná -->
-<div class="min-h-screen flex flex-col items-center justify-center text-white p-6">
+<div class="absolute right-0 bottom-0 -z-10 flex h-screen w-screen flex-col items-center justify-center p-6 text-text">
+	<!-- Nadpis -->
+	<h1 class="mb-8 text-center text-4xl font-bold">
+		Quest: {name}
+	</h1>
 
-    <!-- Nadpis -->
-    <h1 class="text-4xl font-bold mb-8 text-center">
-        Quest: {name}
-    </h1>
+	<!-- Popis -->
+	<p class="mb-8 max-w-2xl text-center text-lg text-text-200">
+		{description}
+	</p>
 
-    <!-- Popis -->
-    <p class="text-lg text-gray-300 max-w-2xl text-center mb-8">
-        {description}
-    </p>
+	<!-- Řádky kódu -->
+	<div class="w-full max-w-2xl space-y-1 rounded bg-background-900 p-4 text-text shadow-xl">
+		{#each lines as line, i}
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="cursor-pointer rounded border border-transparent whitespace-pre transition {selectedLine == i ? 'bg-background-800' : ''}"
+				on:click={() => (selectedLine = i)}
+			>
+				<span class="px-2 text-text-600">{i + 1}.</span>
+				{line}
+			</div>
+		{/each}
+	</div>
 
-    <!-- Řádky kódu -->
-    <div class="bg-gray-800 text-white rounded p-4 space-y-1 w-full max-w-2xl shadow-xl">
-        {#each lines as line, i}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div
-                class="cursor-pointer rounded transition border border-transparent whitespace-pre"
-                class:selected={selectedLine === i}
-                on:click={() => (selectedLine = i)}
-            >
-                <span class="text-gray-500 pr-2">{i + 1}.</span> {line}
-            </div>
-{/each}
+	<!-- Tlačítko -->
+	<button
+		on:click={submit}
+		class="mt-6 rounded-lg bg-primary px-6 py-3 text-lg font-semibold text-background transition-colors hover:bg-primary-400"
+	>
+		Submit
+	</button>
 
-    </div>
-
-    <!-- Tlačítko -->
-    <button
-        on:click={submit}
-        class="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold text-lg transition"
-    >
-        Submit
-    </button>
-
-    <!-- Výsledek -->
-    <div class="mt-4 text-xl font-semibold h-8">
-        {message}
-    </div>
+	<!-- Výsledek -->
+	<div class="mt-4 h-8 text-xl font-semibold text-text">
+		{message}
+	</div>
 </div>
-
-<style>
-    .selected {
-        background-color: #1e40af; /* Tailwind blue-800 */
-    }
-</style>
