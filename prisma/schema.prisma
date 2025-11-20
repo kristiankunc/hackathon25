@@ -27,3 +27,9 @@ model BugFixQuest {
   rewardMoney Int
   correctLine Int
 }
+
+model RealOrFakeQuest {
+  id          Int      @id @default(autoincrement())
+  picturesFilepath String
+  fakePicture String
+}
