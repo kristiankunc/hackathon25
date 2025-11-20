@@ -80,7 +80,12 @@ interface ShipAttachment {
 class Spaceship {
 	type: "friendly" | "enemy";
 	spaceship_sprite: Sprite;
-	private sprites: Sprite[];
+	private sprites: Sprite[]; // Used for managing spaceship components
+    private speed = 30;
+    private movingUp: boolean | undefined;
+    private movingDown: boolean | undefined;
+    private movingRight: boolean | undefined;
+    private movingLeft: boolean | undefined;
 
 	private constructor(type: "friendly" | "enemy", spaceship_sprite: Sprite, sprites: Map<string, Sprite>, config: ShipAttachment[]) {
 		this.type = type;
@@ -143,6 +148,45 @@ class Spaceship {
 
 		return new Spaceship(type, spaceship_sprite, sprites, config);
 	}
+
+    changeState(event: KeyboardEvent, type: boolean) {
+        console.log("Keybaord event", type)
+        switch (event.key) {
+            case "w":
+                this.movingUp = type
+            case "a":
+                this.movingLeft = type
+            case "s":
+                this.movingDown = type
+            case "d":
+                this.movingRight = type
+        }
+    }
+
+    keyboardHandler(event: KeyboardEvent) {
+        console.log("Keyboard event")
+        switch (event.type) {
+            case "keydown":
+                this.changeState(event, true)
+            case "keyup":
+                this.changeState(event, false)
+        }
+    }
+
+    move(deltaTime: number) {
+        if (this.movingUp) {
+            this.spaceship_sprite.y -= this.speed * deltaTime
+        }
+        if (this.movingDown) {
+            this.spaceship_sprite.y += this.speed * deltaTime
+        }
+        if (this.movingLeft) {
+            this.spaceship_sprite.x -= this.speed * deltaTime
+        }
+        if (this.movingRight) {
+            this.spaceship_sprite.x += this.speed * deltaTime
+        }
+    }
 }
 
 export default Spaceship;

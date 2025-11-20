@@ -20,10 +20,9 @@
 
 		container.addChild(backgroundSprite);
 
-		return { app, rootContainer: container };
+		return { app, rootContainer: container, parent };
 	};
 
-	const gameUpdate = (time: Ticker) => {};
 
 	const createButtons = async (app: Application) => {
 		const buttonsContainer = new Container();
@@ -57,7 +56,7 @@
 
 	onMount(async () => {
 		(async () => {
-			const { app, rootContainer } = await initPixieApp();
+			const { app, rootContainer, parent } = await initPixieApp();
 			const buttonsContainer = await createButtons(app);
 
 			rootContainer.addChild(buttonsContainer);
@@ -82,6 +81,8 @@
 				{ name: "MORAVA_SHIELD", position: slotCoordinates.centerFront }
 			]);
 
+            parent.addEventListener("keydown", player.keyboardHandler);
+
 			player.spaceship_sprite.position.x = 325;
 			player.spaceship_sprite.position.y = app.screen.height / 2;
 
@@ -92,7 +93,9 @@
 			rootContainer.addChild(enemy.spaceship_sprite);
 
 			// Main loop
-			app.ticker.add(gameUpdate);
+			app.ticker.add((ticker) => {
+                player.move(ticker.deltaTime)
+            });
 		})();
 	});
 </script>
