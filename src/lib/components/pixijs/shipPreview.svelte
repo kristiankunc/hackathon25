@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Application, Assets, Container, Sprite, Graphics } from "pixi.js";
+	import { Application, Assets, Container, Sprite, type SpriteOptions } from "pixi.js";
 
 	let slotCoordinates = {
 		lWing1: { x: 0, y: 0 },
@@ -12,6 +12,34 @@
 		centerFront: { x: 0, y: 0 },
 		centerMid: { x: 0, y: 0 },
 		centerBack: { x: 0, y: 0 }
+	};
+
+	let sprites = {
+		SPACESHIP: {
+			texturePath: "/assets/ship.png",
+			scale: 0.6,
+			texture: null as SpriteOptions | null
+		},
+		LASER: {
+			texturePath: "/assets/guns/laser.png",
+			scale: 0.1,
+			texture: null as SpriteOptions | null
+		},
+		STEAM_ENGINE: {
+			texturePath: "/assets/engines/steam.webp",
+			scale: 0.2,
+			texture: null as SpriteOptions | null
+		},
+		SKODA_ENGINE: {
+			texturePath: "/assets/engines/skoda.webp",
+			scale: 0.2,
+			texture: null as SpriteOptions | null
+		},
+		UNITY_ENGINE: {
+			texturePath: "/assets/engines/unity.webp",
+			scale: 0.2,
+			texture: null as SpriteOptions | null
+		}
 	};
 
 	onMount(async () => {
@@ -26,10 +54,12 @@
 
 			app.stage.addChild(container);
 
-			const texture = await Assets.load("/assets/ship.png");
-			const laserTexture = await Assets.load("/assets/guns/laser.png");
+			for (const key in sprites) {
+				const spriteInfo = sprites[key as keyof typeof sprites];
+				spriteInfo.texture = await Assets.load(spriteInfo.texturePath);
+			}
 
-			const mySpaceship = new Sprite(texture);
+			const mySpaceship = new Sprite(sprites.SPACESHIP.texture!);
 			container.addChild(mySpaceship);
 			mySpaceship.scale.set(0.6);
 			mySpaceship.scale.x = -mySpaceship.scale.x;
@@ -52,35 +82,22 @@
 
 			for (const slot in slotCoordinates) {
 				const coord = slotCoordinates[slot as keyof typeof slotCoordinates];
-				const laser = new Sprite(laserTexture);
+				const laser = new Sprite(sprites.LASER.texture!);
 				laser.anchor.set(0.5);
 				laser.scale.set(0.1);
 				laser.scale.x *= Math.sign(mySpaceship.scale.x);
-				// Convert relative coordinates to screen coordinates, accounting for scale and flip
 				laser.x = mySpaceship.x + coord.x * mySpaceship.scale.x;
 				laser.y = mySpaceship.y + coord.y * mySpaceship.scale.y;
 				container.addChild(laser);
 			}
 
 			// duplicate the spaceship sprite and flip it horizontally to represent an enemy ship
-			const enemySpaceship = new Sprite(texture);
+			const enemySpaceship = new Sprite(sprites.SPACESHIP.texture!);
 			container.addChild(enemySpaceship);
 			enemySpaceship.scale.set(0.6);
 			enemySpaceship.anchor.set(0.5);
 			enemySpaceship.x = app.renderer.width - 225;
 			enemySpaceship.y = app.renderer.height / 2;
-
-			for (const slot in slotCoordinates) {
-				const coord = slotCoordinates[slot as keyof typeof slotCoordinates];
-				const laser = new Sprite(laserTexture);
-				laser.anchor.set(0.5);
-				laser.scale.set(0.1);
-
-				// Convert relative coordinates to screen coordinates, accounting for scale and flip
-				laser.x = enemySpaceship.x + coord.x * enemySpaceship.scale.x;
-				laser.y = enemySpaceship.y + coord.y * enemySpaceship.scale.y;
-				container.addChild(laser);
-			}
 
 			app.ticker.add(() => {
 				// Add animation logic here if needed
