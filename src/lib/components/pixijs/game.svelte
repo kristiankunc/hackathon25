@@ -7,7 +7,12 @@
 		const parent = <HTMLDivElement>document.getElementById("render-div");
 		const app = new Application();
 
-		await app.init({ background: "#000000", resizeTo: parent });
+		await app.init({
+			background: "#000000",
+			width: 1920,
+			height: 1080,
+			resizeTo: parent
+		});
 		parent.appendChild(app.canvas);
 
 		const container = new Container();
@@ -83,10 +88,10 @@
 			window.addEventListener("keydown", player.keyboardHandler);
 			window.addEventListener("keyup", player.keyboardHandler);
 
-			player.spaceship_sprite.position.x = 325;
+			player.spaceship_sprite.position.x = app.screen.width / 10;
 			player.spaceship_sprite.position.y = app.screen.height / 2;
 
-			enemy.spaceship_sprite.position.x = app.screen.width - 325;
+			enemy.spaceship_sprite.position.x = app.screen.width - player.spaceship_sprite.position.x;
 			enemy.spaceship_sprite.position.y = app.screen.height / 2;
 
 			rootContainer.addChild(player.spaceship_sprite);
