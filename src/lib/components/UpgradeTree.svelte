@@ -1,7 +1,7 @@
 <script lang="ts">
 	type NodeStatus = "locked" | "purchased";
 	type UpgradeType = "equipment" | "stats";
-	type EquipmentType = "engine" | "shield" | "gun" | "turret";
+	type EquipmentType = "engine" | "shield" | "gun";
 
 	interface Node {
 		id: number;
@@ -22,62 +22,376 @@
 		item: Node | null;
 	}
 
-	const NODE_RADIUS = 30;
-	const LINE_GAP = 10;
+	const NODE_RADIUS = 25;
+	const LINE_GAP = 7;
 	const MODAL_OFFSET_Y = 80;
 
 	let root: Node = {
 		id: 1,
 		status: "purchased",
-		x: 100,
-		y: 100,
+		x: 445,
+		y: 300,
 		type: "stats",
 		icon: "",
 		children: [
 			{
 				id: 2,
 				status: "purchased",
-				type: "stats",
-				icon: "",
-				x: 250,
-				y: 50,
+				type: "equipment",
+				itemType: "gun",
+				icon: "/assets/guns/smg.png",
+				x: 145,
+				y: 150,
 				children: [
 					{
-						id: 4,
-						status: "purchased",
+						id: 13,
+						status: "locked",
 						type: "equipment",
-						itemType: "shield",
-						icon: "/assets/shields/cechy.webp",
-						x: 400,
+						itemType: "gun",
+						icon: "/assets/guns/smg.png",
+						x: 145,
 						y: 50,
 						children: [
-							{ id: 7, status: "purchased", type: "equipment", itemType: "shield", icon: "/assets/shields/morava.webp", x: 550, y: 50 },
-							{ id: 8, status: "locked", type: "equipment", itemType: "shield", icon: "/assets/shields/slezsko.webp", x: 650, y: 125 }
+							{
+								id: 14,
+								status: "locked",
+								type: "equipment",
+								itemType: "gun",
+								icon: "/assets/guns/smg.png",
+								x: 145,
+								y: -50
+							}
 						]
-					},
-					{ id: 5, status: "purchased", type: "equipment", itemType: "gun", icon: "/assets/guns/laser.png", x: 400, y: 150 }
+					}
 				]
 			},
 			{
 				id: 3,
 				status: "purchased",
 				type: "equipment",
+				itemType: "gun",
+				icon: "/assets/guns/bow.png",
+				x: 205,
+				y: 150,
+				children: [
+					{
+						id: 15,
+						status: "locked",
+						type: "equipment",
+						itemType: "gun",
+						icon: "/assets/guns/bow.png",
+						x: 205,
+						y: 50,
+						children: [
+							{
+								id: 16,
+								status: "locked",
+								type: "equipment",
+								itemType: "gun",
+								icon: "/assets/guns/bow.png",
+								x: 205,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 4,
+				status: "purchased",
+				type: "equipment",
+				itemType: "gun",
+				icon: "/assets/guns/mortar.png",
+				x: 265,
+				y: 150,
+				children: [
+					{
+						id: 17,
+						status: "locked",
+						type: "equipment",
+						itemType: "gun",
+						icon: "/assets/guns/mortar.png",
+						x: 265,
+						y: 50,
+						children: [
+							{
+								id: 18,
+								status: "locked",
+								type: "equipment",
+								itemType: "gun",
+								icon: "/assets/guns/mortar.png",
+								x: 265,
+								y: -50,
+								children: []
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 5,
+				status: "purchased",
+				type: "equipment",
+				itemType: "gun",
+				icon: "/assets/guns/laser.png",
+				x: 325,
+				y: 150,
+				children: [
+					{
+						id: 19,
+						status: "locked",
+						type: "equipment",
+						itemType: "gun",
+						icon: "/assets/guns/laser.png",
+						x: 325,
+						y: 50,
+						children: [
+							{
+								id: 20,
+								status: "locked",
+								type: "equipment",
+								itemType: "gun",
+								icon: "/assets/guns/laser.png",
+								x: 325,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 6,
+				status: "purchased",
+				type: "equipment",
+				itemType: "shield",
+				icon: "/assets/shields/cechy.webp",
+				x: 385,
+				y: 150,
+				children: [
+					{
+						id: 21,
+						status: "locked",
+						type: "equipment",
+						itemType: "shield",
+						icon: "/assets/shields/cechy.webp",
+						x: 385,
+						y: 50,
+						children: [
+							{
+								id: 22,
+								status: "locked",
+								type: "equipment",
+								itemType: "shield",
+								icon: "/assets/shields/cechy.webp",
+								x: 385,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 7,
+				status: "purchased",
+				type: "equipment",
+				itemType: "shield",
+				icon: "/assets/shields/morava.webp",
+				x: 445,
+				y: 150,
+				children: [
+					{
+						id: 23,
+						status: "locked",
+						type: "equipment",
+						itemType: "shield",
+						icon: "/assets/shields/morava.webp",
+						x: 445,
+						y: 50,
+						children: [
+							{
+								id: 24,
+								status: "locked",
+								type: "equipment",
+								itemType: "shield",
+								icon: "/assets/shields/morava.webp",
+								x: 445,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 8,
+				status: "locked",
+				type: "equipment",
+				itemType: "shield",
+				icon: "/assets/shields/slezsko.webp",
+				x: 505,
+				y: 150,
+				children: [
+					{
+						id: 25,
+						status: "locked",
+						type: "equipment",
+						itemType: "shield",
+						icon: "/assets/shields/slezsko.webp",
+						x: 505,
+						y: 50,
+						children: [
+							{
+								id: 26,
+								status: "locked",
+								type: "equipment",
+								itemType: "shield",
+								icon: "/assets/shields/slezsko.webp",
+								x: 505,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 9,
+				status: "locked",
+				type: "equipment",
+				itemType: "shield",
+				icon: "/assets/shields/slovensko.webp",
+				x: 565,
+				y: 150,
+				children: [
+					{
+						id: 27,
+						status: "locked",
+						type: "equipment",
+						itemType: "shield",
+						icon: "/assets/shields/slovensko.webp",
+						x: 565,
+						y: 50,
+						children: [
+							{
+								id: 28,
+								status: "locked",
+								type: "equipment",
+								itemType: "shield",
+								icon: "/assets/shields/slovensko.webp",
+								x: 565,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 10,
+				status: "locked",
+				type: "equipment",
+				itemType: "engine",
+				icon: "/assets/engines/steam.webp",
+				x: 625,
+				y: 150,
+				children: [
+					{
+						id: 29,
+						status: "locked",
+						type: "equipment",
+						itemType: "engine",
+						icon: "/assets/engines/steam.webp",
+						x: 625,
+						y: 50,
+						children: [
+							{
+								id: 30,
+								status: "locked",
+								type: "equipment",
+								itemType: "engine",
+								icon: "/assets/engines/steam.webp",
+								x: 625,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 11,
+				status: "locked",
+				type: "equipment",
 				itemType: "engine",
 				icon: "/assets/engines/skoda.webp",
-				x: 250,
+				x: 685,
 				y: 150,
-				children: [{ id: 6, status: "locked", type: "equipment", itemType: "engine", icon: "/assets/engines/steam.webp", x: 400, y: 250 }]
+				children: [
+					{
+						id: 31,
+						status: "locked",
+						type: "equipment",
+						itemType: "engine",
+						icon: "/assets/engines/skoda.webp",
+						x: 685,
+						y: 50,
+						children: [
+							{
+								id: 32,
+								status: "locked",
+								type: "equipment",
+								itemType: "engine",
+								icon: "/assets/engines/skoda.webp",
+								x: 685,
+								y: -50
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 12,
+				status: "locked",
+				type: "equipment",
+				itemType: "engine",
+				icon: "/assets/engines/unity.webp",
+				x: 745,
+				y: 150,
+				children: [
+					{
+						id: 33,
+						status: "locked",
+						type: "equipment",
+						itemType: "engine",
+						icon: "/assets/engines/unity.webp",
+						x: 745,
+						y: 50,
+						children: [
+							{
+								id: 34,
+								status: "locked",
+								type: "equipment",
+								itemType: "engine",
+								icon: "/assets/engines/unity.webp",
+								x: 745,
+								y: -50
+							}
+						]
+					}
+				]
 			}
 		]
 	};
 
 	let slots: Slot[] = [
-		{ id: "slot1", x: 120, y: 50, type: "engine", item: null },
-		{ id: "slot2", x: 320, y: 50, type: "shield", item: null },
-		{ id: "slot3", x: 120, y: 200, type: "gun", item: null }
+		{ id: "slot1", x: 155, y: 300, type: "engine", item: null },
+		{ id: "slot2", x: 210, y: 300, type: "engine", item: null },
+		{ id: "slot3", x: 30, y: 250, type: "gun", item: null },
+		{ id: "slot4", x: 330, y: 250, type: "gun", item: null },
+		{ id: "slot5", x: 270, y: 195, type: "gun", item: null },
+		{ id: "slot6", x: 85, y: 195, type: "gun", item: null },
+		{ id: "slot7", x: 183, y: -75, type: "shield", item: null },
+		{ id: "slot8", x: 183, y: 50, type: "shield", item: null },
+		{ id: "slot9", x: 183, y: 200, type: "gun", item: null }
 	];
 
-	let allNodes: Node[] = [];
+	let allNodes: (Node & { depth: number })[] = [];
 	let lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
 
 	let hoveredNode: Node | null = null;
@@ -85,11 +399,11 @@
 
 	let draggingNode: Node | null = null;
 
-	function flattenTree(node: Node): Node[] {
-		let nodes = [node];
+	function flattenTree(node: Node, depth = 0): (Node & { depth: number })[] {
+		let nodes = [{ ...node, depth }];
 		if (node.children) {
 			for (const child of node.children) {
-				nodes.push(...flattenTree(child));
+				nodes.push(...flattenTree(child, depth + 1));
 			}
 		}
 		return nodes;
@@ -145,7 +459,7 @@
 
 <div class="flex items-start justify-center gap-8">
 	<div class="relative" style="width: 400px; height: 300px;">
-		<img src="/assets/ship.png" alt="Spaceship" class="h-full w-full object-contain" />
+		<img src="/assets/ship.png" alt="Spaceship" class="h-full w-full scale-150 rotate-90 object-contain" />
 
 		{#each slots as slot, i}
 			<div
@@ -188,7 +502,15 @@
 				draggable={node.status === "purchased" && node.type === "equipment"}
 				on:dragstart={() => handleDragStart(node)}
 			>
-				<img src={node.icon} alt={`Node ${node.id}`} class="pointer-events-none h-12 w-12 object-contain" />
+				{#if node.depth === 1}
+					<!-- main tier nodes show icon -->
+					<img src={node.icon} alt={`Node ${node.id}`} class="pointer-events-none h-12 w-12 object-contain" />
+				{:else}
+					<!-- children show text -->
+					<span class="text-xs font-bold">
+						{node.depth === 2 ? "Lvl. 2" : "Lvl. 3"}
+					</span>
+				{/if}
 			</button>
 		{/each}
 
