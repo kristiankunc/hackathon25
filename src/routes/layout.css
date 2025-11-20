@@ -1,5 +1,78 @@
 @import "tailwindcss";
 
-body {
-    background-color: rgb(55 65 81);
+@theme {
+	--color-text: #f4d7e0;
+	--color-background: #0b0408;
+	--color-primary: #de8cac;
+	--color-secondary: #6c3546;
+	--color-accent: #5db3d0;
+
+	--color-text-50: #faebf0;
+	--color-text-100: #f4d7e0;
+	--color-text-200: #e9afc1;
+	--color-text-300: #de87a3;
+	--color-text-400: #d35f84;
+	--color-text-500: #c83765;
+	--color-text-600: #a02c51;
+	--color-text-700: #78213d;
+	--color-text-800: #501628;
+	--color-text-900: #280b14;
+	--color-text-950: #14050a;
+
+	--color-background-50: #f8ecf3;
+	--color-background-100: #f1dae7;
+	--color-background-200: #e4b4cf;
+	--color-background-300: #d68fb7;
+	--color-background-400: #c9699f;
+	--color-background-500: #bb4487;
+	--color-background-600: #96366c;
+	--color-background-700: #702951;
+	--color-background-800: #4b1b36;
+	--color-background-900: #250e1b;
+	--color-background-950: #13070e;
+
+	--color-primary-50: #f9ebf1;
+	--color-primary-100: #f4d7e2;
+	--color-primary-200: #e8b0c5;
+	--color-primary-300: #dd88a9;
+	--color-primary-400: #d1618c;
+	--color-primary-500: #c6396f;
+	--color-primary-600: #9e2e59;
+	--color-primary-700: #772243;
+	--color-primary-800: #4f172c;
+	--color-primary-900: #280b16;
+	--color-primary-950: #14060b;
+
+	--color-secondary-50: #f7eef1;
+	--color-secondary-100: #eedde2;
+	--color-secondary-200: #ddbbc6;
+	--color-secondary-300: #cd98a9;
+	--color-secondary-400: #bc768c;
+	--color-secondary-500: #ab5470;
+	--color-secondary-600: #894359;
+	--color-secondary-700: #673243;
+	--color-secondary-800: #44222d;
+	--color-secondary-900: #221116;
+	--color-secondary-950: #11080b;
+
+	--color-accent-50: #ebf6f9;
+	--color-accent-100: #d7edf4;
+	--color-accent-200: #b0dae8;
+	--color-accent-300: #88c8dd;
+	--color-accent-400: #61b5d1;
+	--color-accent-500: #39a3c6;
+	--color-accent-600: #2e829e;
+	--color-accent-700: #226277;
+	--color-accent-800: #17414f;
+	--color-accent-900: #0b2128;
+	--color-accent-950: #061014;
 }
+
+.material-symbols-outlined {
+	font-variation-settings:
+		"FILL" 0,
+		"wght" 400,
+		"GRAD" 0,
+		"opsz" 24;
+}
+
