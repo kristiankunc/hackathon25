@@ -1,7 +1,7 @@
 <script lang="ts">
 	type NodeStatus = "locked" | "purchased";
 	type UpgradeType = "equipment" | "stats";
-	type EquipmentType = "engine" | "shield" | "gun" | "turret";
+	type EquipmentType = "engine" | "shield" | "gun";
 
 	interface Node {
 		id: number;
@@ -29,7 +29,7 @@
 	let root: Node = {
 		id: 1,
 		status: "purchased",
-		x: 100,
+		x: 0,
 		y: 100,
 		type: "stats",
 		icon: "",
@@ -37,25 +37,22 @@
 			{
 				id: 2,
 				status: "purchased",
-				type: "stats",
-				icon: "",
+				type: "equipment",
+				itemType: "gun",
+				icon: "/assets/guns/smg.png",
 				x: 250,
 				y: 50,
 				children: [
 					{
-						id: 4,
+						id: 5,
 						status: "purchased",
 						type: "equipment",
-						itemType: "shield",
-						icon: "/assets/shields/cechy.webp",
+						itemType: "gun",
+						icon: "/assets/guns/bow.png",
 						x: 400,
 						y: 50,
-						children: [
-							{ id: 7, status: "purchased", type: "equipment", itemType: "shield", icon: "/assets/shields/morava.webp", x: 550, y: 50 },
-							{ id: 8, status: "locked", type: "equipment", itemType: "shield", icon: "/assets/shields/slezsko.webp", x: 650, y: 125 }
-						]
-					},
-					{ id: 5, status: "purchased", type: "equipment", itemType: "gun", icon: "/assets/guns/laser.png", x: 400, y: 150 }
+						children: [{ id: 7, status: "purchased", type: "equipment", itemType: "gun", icon: "/assets/guns/mortar.png", x: 550, y: 50 }]
+					}
 				]
 			},
 			{
@@ -67,14 +64,33 @@
 				x: 250,
 				y: 150,
 				children: [{ id: 6, status: "locked", type: "equipment", itemType: "engine", icon: "/assets/engines/steam.webp", x: 400, y: 250 }]
+			},
+			{
+				id: 4,
+				status: "purchased",
+				type: "equipment",
+				itemType: "shield",
+				icon: "/assets/shields/cechy.webp",
+				x: 250,
+				y: 150,
+				children: [
+					{ id: 7, status: "purchased", type: "equipment", itemType: "shield", icon: "/assets/shields/morava.webp", x: 400, y: 150 },
+					{ id: 8, status: "locked", type: "equipment", itemType: "shield", icon: "/assets/shields/slezsko.webp", x: 500, y: 225 }
+				]
 			}
 		]
 	};
 
 	let slots: Slot[] = [
-		{ id: "slot1", x: 120, y: 50, type: "engine", item: null },
-		{ id: "slot2", x: 320, y: 50, type: "shield", item: null },
-		{ id: "slot3", x: 120, y: 200, type: "gun", item: null }
+		{ id: "slot1", x: 155, y: 300, type: "engine", item: null },
+		{ id: "slot2", x: 210, y: 300, type: "engine", item: null },
+		{ id: "slot3", x: 30, y: 250, type: "gun", item: null },
+		{ id: "slot4", x: 330, y: 250, type: "gun", item: null },
+		{ id: "slot5", x: 270, y: 195, type: "gun", item: null },
+		{ id: "slot6", x: 85, y: 195, type: "gun", item: null },
+		{ id: "slot7", x: 183, y: -75, type: "shield", item: null },
+		{ id: "slot8", x: 183, y: 50, type: "shield", item: null },
+		{ id: "slot9", x: 183, y: 200, type: "gun", item: null }
 	];
 
 	let allNodes: Node[] = [];
@@ -145,7 +161,7 @@
 
 <div class="flex items-start justify-center gap-8">
 	<div class="relative" style="width: 400px; height: 300px;">
-		<img src="/assets/ship.png" alt="Spaceship" class="h-full w-full object-contain" />
+		<img src="/assets/ship.png" alt="Spaceship" class="h-full w-full scale-150 rotate-90 object-contain" />
 
 		{#each slots as slot, i}
 			<div
