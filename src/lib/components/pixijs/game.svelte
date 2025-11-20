@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Application, Assets, Container, Sprite, Ticker } from "pixi.js";
+	import { Application, Assets, Container, Sprite, Ticker, Graphics } from "pixi.js";
 	import Spaceship, { slotCoordinates } from "./spaceship";
 
 	const initPixieApp = async () => {
@@ -53,6 +53,56 @@
 		return buttonsContainer;
 	};
 
+	async function createHealthBar(options: { x: number; y: number; width: number; height: number }) {
+		const { x, y, width, height } = options;
+
+		const barTexture = await Assets.load("/assets/Bar.png");
+		const heartTexture = await Assets.load("/assets/Heart.png");
+
+		const container = new Container();
+
+		const emptyBar = new Sprite(barTexture);
+		emptyBar.width = width;
+		emptyBar.height = height;
+
+		const fillBar = new Graphics();
+		fillBar.beginFill(0xff0000);
+		fillBar.drawRect(0, 0, width, height);
+		fillBar.endFill();
+
+		let icon: Sprite | null = null;
+		let offsetX = 0;
+
+		icon = new Sprite(heartTexture);
+		icon.width = height;
+		icon.height = height;
+		icon.x = 0;
+		icon.y = 0;
+
+		offsetX = icon.width + 8;
+		container.addChild(icon);
+
+		emptyBar.x = offsetX;
+		fillBar.x = offsetX;
+
+		container.addChild(fillBar);
+		container.addChild(emptyBar);
+
+		container.x = x;
+		container.y = y;
+
+		return {
+			container,
+			setHealth: (value: number) => {
+				const pct = Math.max(0, Math.min(1, value));
+				fillBar.clear();
+				fillBar.beginFill(0xff0000);
+				fillBar.drawRect(0, 0, width * pct, height);
+				fillBar.endFill();
+			}
+		};
+	}
+
 	onMount(async () => {
 		(async () => {
 			const { app, rootContainer, parent } = await initPixieApp();
@@ -91,6 +141,26 @@
 
 			rootContainer.addChild(player.spaceship_sprite);
 			rootContainer.addChild(enemy.spaceship_sprite);
+
+			const playerHealth = await createHealthBar({
+				x: 40,
+				y: 40,
+				width: 250,
+				height: 32
+			});
+
+			const enemyHealth = await createHealthBar({
+				x: app.screen.width - 330,
+				y: 40,
+				width: 250,
+				height: 32
+			});
+
+			rootContainer.addChild(playerHealth.container);
+			rootContainer.addChild(enemyHealth.container);
+
+			playerHealth.setHealth(0.5); // 60%
+			enemyHealth.setHealth(0.3); // 30%
 
 			// Main loop
 			app.ticker.add((ticker) => {
