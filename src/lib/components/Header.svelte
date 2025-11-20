@@ -1,4 +1,4 @@
-<header class="border-b bg-gray-800 text-white">
+<header class="bg-gray-800 text-white">
 	<div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
 		<a href="/" class="text-xl font-bold">MySite</a>
 
