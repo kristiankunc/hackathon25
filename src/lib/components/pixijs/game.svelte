@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { Application, Assets, Container, Sprite, Ticker } from "pixi.js";
+    import Spaceship from "./spaceship";
 
     const initPixieApp = async () => {
         const parent = <HTMLDivElement>document.getElementById("render-div");
@@ -60,6 +61,11 @@
             const buttonsContainer = await createButtons(app)
 
             rootContainer.addChild(buttonsContainer)
+
+            const player = await Spaceship.create();
+            const enemy = await Spaceship.create();
+
+            rootContainer.addChild(player.spaceship_sprite)
 
 			// Main loop
 			app.ticker.add(gameUpdate);
