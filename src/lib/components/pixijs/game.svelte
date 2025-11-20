@@ -94,7 +94,7 @@
 
 			// Main loop
 			app.ticker.add((ticker) => {
-				player.move(ticker.deltaTime);
+				player.move(ticker.deltaTime, app.screen.width, app.screen.height);
 			});
 
 			// Cleanup on unmount

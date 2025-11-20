@@ -81,7 +81,7 @@ class Spaceship {
 	type: "friendly" | "enemy";
 	spaceship_sprite: Sprite;
 	private sprites: Sprite[]; // Used for managing spaceship components
-	private speed = 3;
+	private speed = 4;
 	private movingUp: boolean | undefined;
 	private movingDown: boolean | undefined;
 	private movingRight: boolean | undefined;
@@ -179,7 +179,8 @@ class Spaceship {
 		}
 	};
 
-	move(deltaTime: number) {
+	move(deltaTime: number, screenWidth: number, screenHeight: number) {
+		// Apply movement
 		if (this.movingUp) {
 			this.spaceship_sprite.y -= this.speed * deltaTime;
 		}
@@ -191,6 +192,20 @@ class Spaceship {
 		}
 		if (this.movingRight) {
 			this.spaceship_sprite.x += this.speed * deltaTime;
+		}
+
+		// Enforce screen bounds - no going outside
+		if (this.spaceship_sprite.x < 150) {
+			this.spaceship_sprite.x = 150;
+		}
+		if (this.spaceship_sprite.x > screenWidth / 4) {
+			this.spaceship_sprite.x = screenWidth / 4;
+		}
+		if (this.spaceship_sprite.y < 140) {
+			this.spaceship_sprite.y = 140;
+		}
+		if (this.spaceship_sprite.y > screenHeight - 140) {
+			this.spaceship_sprite.y = screenHeight - 140;
 		}
 	}
 }
