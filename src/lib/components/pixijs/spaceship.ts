@@ -81,7 +81,7 @@ class Spaceship {
 	type: "friendly" | "enemy";
 	spaceship_sprite: Sprite;
 	private sprites: Sprite[]; // Used for managing spaceship components
-	private speed = 30;
+	private speed = 3;
 	private movingUp: boolean | undefined;
 	private movingDown: boolean | undefined;
 	private movingRight: boolean | undefined;
