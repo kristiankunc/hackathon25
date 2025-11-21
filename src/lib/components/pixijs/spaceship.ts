@@ -1,6 +1,6 @@
 import { Assets, Container, Sprite, Ticker } from "pixi.js";
-import { MortarShot, type Projectile } from "./projectile";
-import { Shoot, type Ability } from "./ability";
+import { type Projectile } from "./projectile";
+import { LaserBeam, MortarShoot, Shoot, type Ability } from "./ability";
 
 const spritesData = {
 	LASER: {
@@ -108,7 +108,7 @@ class Spaceship {
 	private movingRight: boolean | undefined;
 	private movingLeft: boolean | undefined;
 
-	private shoot: Ability;
+	private abilities: Ability[];
 
 	private constructor(type: "friendly" | "enemy", projectiles: Projectile[], spaceship_sprite: Sprite, sprites: Map<string, Sprite>, config: ShipAttachment[]) {
 		this.type = type;
@@ -116,7 +116,11 @@ class Spaceship {
 		this.sprites = Array.from(sprites.values());
 		this.projectiles = projectiles;
 
-		this.shoot = new Shoot(this, type, projectiles);
+		const shoot = new Shoot(this, type, projectiles);
+		const mortar = new MortarShoot(this, type, projectiles);
+		const laser = new LaserBeam(this, type, projectiles);
+
+		this.abilities = [shoot, mortar, laser];
 
 		const shipWidth = spaceship_sprite.texture.width;
 		const shipHeight = spaceship_sprite.texture.height;
@@ -190,8 +194,9 @@ class Spaceship {
 				this.movingRight = type;
 				break;
 			case "h":
-				console.log("[+] Shoot pressed: ", this.type)
-				this.shoot.activate()
+				this.abilities.forEach((ability) => {
+					ability.activate()
+				})
 		}
 	}
 
@@ -212,7 +217,9 @@ class Spaceship {
 	}
 
 	private updateAbilities(deltaMS: number, enemy: Spaceship, rootContainer: Container) {
-		this.shoot.tick(deltaMS, enemy, rootContainer);
+		this.abilities.forEach((ability) => {
+			ability.tick(deltaMS, enemy, rootContainer);
+		})
 	}
 
 	private move(deltaTime: number, screenWidth: number, screenHeight: number) {
