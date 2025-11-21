@@ -24,50 +24,50 @@
 	});
 
     function fixLeadingZeros(expr: string) {
-    // nahradí všechny výskyty 0X → X
-    return expr.replace(/0(\d)/g, "$1");
-}
+        // nahradí všechny výskyty 0X → X
+        return expr.replace(/0(\d)/g, "$1");
+    }
 
 
     function evaluateGuess(guess: string, solution: string) {
-    const result = Array(guess.length).fill('gray');
+        const result = Array(guess.length).fill('gray');
 
-    // 1) Počítání počtu znaků v solution
-    const counts: Record<string, number> = {};
-    for (let i = 0; i < solution.length; i++) {
-        const char = solution[i];
-        counts[char] = (counts[char] || 0) + 1;
-    }
-
-    // 2) GREEN — správné pozice
-    for (let i = 0; i < guess.length; i++) {
-        if (guess[i] === solution[i]) {
-            result[i] = 'green';
-            counts[guess[i]]--; // odečti dostupný znak
+        // 1) Počítání počtu znaků v solution
+        const counts: Record<string, number> = {};
+        for (let i = 0; i < solution.length; i++) {
+            const char = solution[i];
+            counts[char] = (counts[char] || 0) + 1;
         }
-    }
 
-    // 3) YELLOW — správný znak na špatném místě
-    for (let i = 0; i < guess.length; i++) {
-        if (result[i] === 'green') continue; // přeskoč green
-
-        const char = guess[i];
-        if (counts[char] > 0) {
-            result[i] = 'yellow';
-            counts[char]--;
+        // 2) GREEN — správné pozice
+        for (let i = 0; i < guess.length; i++) {
+            if (guess[i] === solution[i]) {
+                result[i] = 'green';
+                counts[guess[i]]--; // odečti dostupný znak
+            }
         }
+
+        // 3) YELLOW — správný znak na špatném místě
+        for (let i = 0; i < guess.length; i++) {
+            if (result[i] === 'green') continue; // přeskoč green
+
+            const char = guess[i];
+            if (counts[char] > 0) {
+                result[i] = 'yellow';
+                counts[char]--;
+            }
+        }
+
+        return result;
     }
 
-    return result;
-}
+    function getClass(expr: string, index: number) {
+        const evaluation = evaluateGuess(expr, expression);
 
-function getClass(expr: string, index: number) {
-    const evaluation = evaluateGuess(expr, expression);
-
-    if (evaluation[index] === 'green') return 'bg-primary-700';
-    if (evaluation[index] === 'yellow') return 'bg-accent';
-    return 'bg-gray-100';
-}
+        if (evaluation[index] === 'green') return 'bg-primary-700';
+        if (evaluation[index] === 'yellow') return 'bg-accent';
+        return 'bg-gray-100';
+    }
 
 </script>
 
