@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Application, Assets, Container, Sprite, Ticker } from "pixi.js";
 	import Spaceship, { buttonSprites, slotCoordinates, type ShipAttachment } from "./spaceship";
 	import { Application, Assets, Container, Sprite, Ticker, Graphics } from "pixi.js";
-	import Spaceship, { slotCoordinates } from "./spaceship";
 	import type { Projectile } from "./projectile";
 
 	const initPixieApp = async () => {
@@ -127,12 +125,12 @@
 			const { app, rootContainer, parent } = await initPixieApp();
 
 			const friendlyLoadout: ShipAttachment[] = [
-        { name: "LASER", position: slotCoordinates.lWing1 },
+				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
 				{ name: "STEN", position: slotCoordinates.rWing1 },
 				{ name: "BOW", position: slotCoordinates.rWing2 },
 				{ name: "SKODA_ENGINE", position: slotCoordinates.centerBack },
-        { name: "CECHY_SHIELD", position: slotCoordinates.centerFront },
+				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront },
 				{
 					name: "SLOVENSKO_SHIELD",
 					position: slotCoordinates.centerBack
@@ -146,21 +144,15 @@
 					position: slotCoordinates.engine1
 				}
 			];
-			const buttonsContainer = await createButtons(app);
-			let projectiles: Projectile[] = []
 
-			rootContainer.addChild(buttonsContainer);
+			let projectiles: Projectile[] = [];
 
-			const players = []
+			const players = [];
 
-			const player = await Spaceship.create("friendly", projectiles, friendlyLoadout)
+			const player = await Spaceship.create("friendly", projectiles, friendlyLoadout);
 			const buttonsContainer = await createButtons(app, friendlyLoadout);
 
 			rootContainer.addChild(buttonsContainer);
-
-			const player = await Spaceship.create("friendly", friendlyLoadout);
-			const enemy = await Spaceship.create("enemy", [
-        
 
 			const enemy = await Spaceship.create("enemy", projectiles, [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
@@ -205,8 +197,8 @@
 			rootContainer.addChild(playerHealth.container);
 			rootContainer.addChild(enemyHealth.container);
 
-			playerHealth.setHealth(player.health/player.MAX_HEALTH);
-			enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
+			playerHealth.setHealth(player.health / player.MAX_HEALTH);
+			enemyHealth.setHealth(enemy.health / enemy.MAX_HEALTH);
 
 			// Main loop
 			app.ticker.add((ticker) => {
@@ -219,12 +211,12 @@
 					if (didHit) {
 						projectiles.splice(index, 1);
 					}
-				})
+				});
 			});
 			app.ticker.add((ticker) => {
-				playerHealth.setHealth(player.health/player.MAX_HEALTH);
-				enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
-			})
+				playerHealth.setHealth(player.health / player.MAX_HEALTH);
+				enemyHealth.setHealth(enemy.health / enemy.MAX_HEALTH);
+			});
 
 			// Cleanup on unmount
 			return () => {
