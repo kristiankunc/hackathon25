@@ -1,5 +1,5 @@
 import { Assets, Container, Sprite, Ticker } from "pixi.js";
-import type { Projectile } from "./projectile";
+import { MortarShot, type Projectile } from "./projectile";
 import { Shoot, type Ability } from "./ability";
 
 const spritesData = {
@@ -160,7 +160,6 @@ class Spaceship {
 	}
 
 	changeState(event: KeyboardEvent, type: boolean) {
-		console.log("Keyboard event", type);
 		switch (event.key) {
 			case "w":
 				this.movingUp = type;
@@ -175,7 +174,7 @@ class Spaceship {
 				this.movingRight = type;
 				break;
 			case "h":
-				console.log("[+] H pressed")
+				console.log("[+] Shoot pressed: ", this.type)
 				this.shoot.activate()
 		}
 	}
@@ -226,18 +225,21 @@ class Spaceship {
 		this.spaceship_sprite.y += yVel
 
 		// Enforce screen bounds - no going outside
-		if (this.spaceship_sprite.x < 150) {
-			this.spaceship_sprite.x = 150;
+		if (this.spaceship_sprite.y + this.spaceship_sprite.height > screenHeight) {
+			this.spaceship_sprite.y = screenHeight - this.spaceship_sprite.height;
 		}
-		if (this.spaceship_sprite.x > screenWidth / 4) {
-			this.spaceship_sprite.x = screenWidth / 4;
+		else if (this.spaceship_sprite.y < 0) {
+			this.spaceship_sprite.y = 0;
 		}
-		if (this.spaceship_sprite.y < 140) {
-			this.spaceship_sprite.y = 140;
+
+		if (this.type == "friendly") {
+			this.spaceship_sprite.x = this.spaceship_sprite.x < 0 ? 0 : this.spaceship_sprite.x;
+			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width > screenWidth / 2 ? screenWidth / 2 - this.spaceship_sprite.width : this.spaceship_sprite.x;	
+		} else if (this.type == "enemy") {
+			this.spaceship_sprite.x = this.spaceship_sprite.x < screenWidth / 2 ? screenWidth / 2 : this.spaceship_sprite.x;
+			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width > screenWidth ? screenWidth - this.spaceship_sprite.width : this.spaceship_sprite.x;
 		}
-		if (this.spaceship_sprite.y > screenHeight - 140) {
-			this.spaceship_sprite.y = screenHeight - 140;
-		}
+
 	}
 
 	getCenterPos() {

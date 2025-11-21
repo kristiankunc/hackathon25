@@ -171,6 +171,7 @@
 			// Main loop
 			app.ticker.add((ticker) => {
 				player.update(ticker, app.screen.width, app.screen.height, enemy, rootContainer);
+				enemy.update(ticker, app.screen.width, app.screen.height, player, rootContainer);
 			});
 			app.ticker.add((ticker) => {
 				for (const projectile of projectiles) {

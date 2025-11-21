@@ -32,19 +32,14 @@ abstract class Ability {
     }
 
     public activate() {
-        console.log("[+] Ability activated")
         if (this.cooldown == 0) {
             this.timeleft = this.TIMELENGTH;
             this.cooldown = this.COOLDOWN;
-            console.log(this.timeleft)
-            console.log(this.cooldown)
         }
     }
 
     public tick(deltaMS: number, enemy: Spaceship, rootContainer: Container) {
         if (this.timeleft > 0) {
-            console.log("[+] Ability going, time left: ", this.timeleft)
-            console.log("[*] DeltaMS: ", deltaMS)
             this.timeleft -= deltaMS;
             this.deltaSinceLastAction += deltaMS;
             if (this.deltaSinceLastAction > this.FREQUENCY) {
@@ -52,14 +47,11 @@ abstract class Ability {
                 this.action(enemy, rootContainer);
             }
         } else if (this.timeleft < 0) {
-            console.log("[*] Timeleft nulled")
             this.timeleft = 0
         }
         if (this.cooldown > 0) {
-            console.log("[+] Cooldown still not zeroed: ", this.cooldown)
             this.cooldown -= deltaMS;
         } else if (this.cooldown < 0) {
-            console.log("[*] Cooldown nulled")
             this.cooldown = 0
         }
     }
