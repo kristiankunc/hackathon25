@@ -99,12 +99,14 @@ class MortarBall extends Projectile {
 }
 
 class Laser extends Projectile {
-	private player: Spaceship;
+    private player: Spaceship;
+    private direction: "left" | "right";
 
-	private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite, player: Spaceship) {
-		super(enemy, speed, posX, posY, sprite, 0.15);
-		this.player = player;
-	}
+    private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite, player: Spaceship, direction: "left" | "right") {
+        super(enemy, speed, posX, posY, sprite, 0.15);
+        this.player = player;
+        this.direction = direction;
+    }
 
 	static async create(enemy: Spaceship, direction: "right" | "left", posX: number, posY: number, player: Spaceship): Promise<Laser> {
 		const texture = await Assets.load("/assets/guns/laserbeam.png");
@@ -112,21 +114,26 @@ class Laser extends Projectile {
 		sprite.setSize(50);
 		sprite.width = 1500;
 
-		if (direction == "left") {
-			sprite.pivot.x = sprite.width;
-		}
+        if (direction == "left") {
+            sprite.rotation = Math.PI
+        }
 
-		return new Laser(enemy, 0, posX, posY, sprite, player);
-	}
+        return new Laser(enemy, 0, posX, posY, sprite, player, direction);
+    }
 
 	move(deltaTime: number) {
 		if (this.sprite.destroyed) {
 			return true;
 		}
 
-		console.log("[+] Laser move");
-		this.sprite.x = this.player.spaceship_sprite.x - 15;
-		this.sprite.y = this.player.spaceship_sprite.y + 30;
+        console.log("[+] Laser move")
+        if (this.direction == "right") {
+            this.sprite.x = this.player.spaceship_sprite.x - 15;
+            this.sprite.y = this.player.spaceship_sprite.y + 30;
+        } else if (this.direction == "left") {
+            this.sprite.x = this.player.spaceship_sprite.x + 15;
+            this.sprite.y = this.player.spaceship_sprite.y + 90;
+        }
 
 		if (this.enemy.checkForHit(this.sprite, this.damage)) {
 			this.onHit();

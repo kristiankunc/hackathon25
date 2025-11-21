@@ -134,7 +134,7 @@
 
 				const part = new Sprite(spriteInfo.texture!);
 				part.anchor.set(0.5);
-				part.scale.set(spriteInfo.scale);
+				part.scale.set(spriteInfo.scale * 2);
 
 				if (spriteInfo.invert) {
 					part.scale.x *= Math.sign(mySpaceship.scale.x);
