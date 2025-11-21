@@ -100,10 +100,12 @@ class MortarBall extends Projectile {
 
 class Laser extends Projectile {
     private player: Spaceship;
+    private direction: "left" | "right";
 
-    private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite, player: Spaceship) {
+    private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite, player: Spaceship, direction: "left" | "right") {
         super(enemy, speed, posX, posY, sprite, 0.15);
         this.player = player;
+        this.direction = direction;
     }
 
     static async create(enemy: Spaceship, direction: "right" | "left", posX: number, posY: number, player: Spaceship): Promise<Laser> {
@@ -113,10 +115,10 @@ class Laser extends Projectile {
         sprite.width = 1500;
 
         if (direction == "left") {
-            sprite.pivot.x = sprite.width;
+            sprite.rotation = Math.PI
         }
 
-        return new Laser(enemy, 0, posX, posY, sprite, player);
+        return new Laser(enemy, 0, posX, posY, sprite, player, direction);
     }
 
     move(deltaTime: number) {
@@ -125,8 +127,13 @@ class Laser extends Projectile {
         }
 
         console.log("[+] Laser move")
-        this.sprite.x = this.player.spaceship_sprite.x - 15;
-        this.sprite.y = this.player.spaceship_sprite.y + 30;
+        if (this.direction == "right") {
+            this.sprite.x = this.player.spaceship_sprite.x - 15;
+            this.sprite.y = this.player.spaceship_sprite.y + 30;
+        } else if (this.direction == "left") {
+            this.sprite.x = this.player.spaceship_sprite.x + 15;
+            this.sprite.y = this.player.spaceship_sprite.y + 90;
+        }
 
         if (this.enemy.checkForHit(this.sprite, this.damage)) {
             this.onHit();
