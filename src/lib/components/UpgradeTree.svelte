@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+
 	type NodeStatus = "locked" | "purchased";
 	type UpgradeType = "equipment" | "stats";
 	type EquipmentType = "engine" | "shield" | "gun";
@@ -27,392 +29,792 @@
 	const LINE_GAP = 7;
 	const MODAL_OFFSET_Y = 80;
 
-	let root: Node = {
-		id: 1,
-		price: 0,
-		status: "purchased",
-		x: 445,
-		y: 300,
-		type: "stats",
-		icon: "/assets/ship.png",
-		children: [
-			{
-				id: 2,
-				price: 15,
+	let root: Node;
+
+	onMount(() => {
+		const saved = localStorage.getItem("upgradeTree");
+
+		if (saved) {
+			root = JSON.parse(saved);
+		} else {
+			// first-time default tree
+			root = {
+				id: 1,
+				price: 0,
 				status: "purchased",
-				type: "equipment",
-				itemType: "gun",
-				icon: "/assets/guns/smg.png",
-				x: 145,
-				y: 150,
+				x: 445,
+				y: 300,
+				type: "stats",
+				icon: "/assets/ship.png",
 				children: [
 					{
-						id: 13,
-						price: 20,
-						status: "locked",
+						id: 2,
+						price: 15,
+						status: "purchased",
 						type: "equipment",
 						itemType: "gun",
 						icon: "/assets/guns/smg.png",
 						x: 145,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 14,
-								price: 30,
+								id: 13,
+								price: 20,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
 								icon: "/assets/guns/smg.png",
 								x: 145,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 14,
+										price: 30,
+										status: "locked",
+										type: "equipment",
+										itemType: "gun",
+										icon: "/assets/guns/smg.png",
+										x: 145,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 3,
-				price: 18,
-				status: "purchased",
-				type: "equipment",
-				itemType: "gun",
-				icon: "/assets/guns/bow.png",
-				x: 205,
-				y: 150,
-				children: [
+					},
 					{
-						id: 15,
-						price: 22,
-						status: "locked",
+						id: 3,
+						price: 18,
+						status: "purchased",
 						type: "equipment",
 						itemType: "gun",
 						icon: "/assets/guns/bow.png",
 						x: 205,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 16,
-								price: 35,
+								id: 15,
+								price: 22,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
 								icon: "/assets/guns/bow.png",
 								x: 205,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 16,
+										price: 35,
+										status: "locked",
+										type: "equipment",
+										itemType: "gun",
+										icon: "/assets/guns/bow.png",
+										x: 205,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 4,
-				price: 12,
-				status: "purchased",
-				type: "equipment",
-				itemType: "gun",
-				icon: "/assets/guns/mortar.png",
-				x: 265,
-				y: 150,
-				children: [
+					},
 					{
-						id: 17,
-						price: 25,
-						status: "locked",
+						id: 4,
+						price: 12,
+						status: "purchased",
 						type: "equipment",
 						itemType: "gun",
 						icon: "/assets/guns/mortar.png",
 						x: 265,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 18,
-								price: 40,
+								id: 17,
+								price: 25,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
 								icon: "/assets/guns/mortar.png",
 								x: 265,
-								y: -50,
-								children: []
+								y: 50,
+								children: [
+									{
+										id: 18,
+										price: 40,
+										status: "locked",
+										type: "equipment",
+										itemType: "gun",
+										icon: "/assets/guns/mortar.png",
+										x: 265,
+										y: -50,
+										children: []
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 5,
-				price: 14,
-				status: "purchased",
-				type: "equipment",
-				itemType: "gun",
-				icon: "/assets/guns/laser.png",
-				x: 325,
-				y: 150,
-				children: [
+					},
 					{
-						id: 19,
-						price: 28,
-						status: "locked",
+						id: 5,
+						price: 14,
+						status: "purchased",
 						type: "equipment",
 						itemType: "gun",
 						icon: "/assets/guns/laser.png",
 						x: 325,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 20,
-								price: 45,
+								id: 19,
+								price: 28,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
 								icon: "/assets/guns/laser.png",
 								x: 325,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 20,
+										price: 45,
+										status: "locked",
+										type: "equipment",
+										itemType: "gun",
+										icon: "/assets/guns/laser.png",
+										x: 325,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 6,
-				price: 16,
-				status: "purchased",
-				type: "equipment",
-				itemType: "shield",
-				icon: "/assets/shields/cechy.webp",
-				x: 385,
-				y: 150,
-				children: [
+					},
 					{
-						id: 21,
-						price: 26,
-						status: "locked",
+						id: 6,
+						price: 16,
+						status: "purchased",
 						type: "equipment",
 						itemType: "shield",
 						icon: "/assets/shields/cechy.webp",
 						x: 385,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 22,
-								price: 50,
+								id: 21,
+								price: 26,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
 								icon: "/assets/shields/cechy.webp",
 								x: 385,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 22,
+										price: 50,
+										status: "locked",
+										type: "equipment",
+										itemType: "shield",
+										icon: "/assets/shields/cechy.webp",
+										x: 385,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 7,
-				price: 17,
-				status: "purchased",
-				type: "equipment",
-				itemType: "shield",
-				icon: "/assets/shields/morava.webp",
-				x: 445,
-				y: 150,
-				children: [
+					},
 					{
-						id: 23,
-						price: 24,
-						status: "locked",
+						id: 7,
+						price: 17,
+						status: "purchased",
 						type: "equipment",
 						itemType: "shield",
 						icon: "/assets/shields/morava.webp",
 						x: 445,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 24,
-								price: 32,
+								id: 23,
+								price: 24,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
 								icon: "/assets/shields/morava.webp",
 								x: 445,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 24,
+										price: 32,
+										status: "locked",
+										type: "equipment",
+										itemType: "shield",
+										icon: "/assets/shields/morava.webp",
+										x: 445,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 8,
-				price: 19,
-				status: "locked",
-				type: "equipment",
-				itemType: "shield",
-				icon: "/assets/shields/slezsko.webp",
-				x: 505,
-				y: 150,
-				children: [
+					},
 					{
-						id: 25,
-						price: 21,
+						id: 8,
+						price: 19,
 						status: "locked",
 						type: "equipment",
 						itemType: "shield",
 						icon: "/assets/shields/slezsko.webp",
 						x: 505,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 26,
-								price: 34,
+								id: 25,
+								price: 21,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
 								icon: "/assets/shields/slezsko.webp",
 								x: 505,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 26,
+										price: 34,
+										status: "locked",
+										type: "equipment",
+										itemType: "shield",
+										icon: "/assets/shields/slezsko.webp",
+										x: 505,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 9,
-				price: 11,
-				status: "locked",
-				type: "equipment",
-				itemType: "shield",
-				icon: "/assets/shields/slovensko.webp",
-				x: 565,
-				y: 150,
-				children: [
+					},
 					{
-						id: 27,
-						price: 27,
+						id: 9,
+						price: 11,
 						status: "locked",
 						type: "equipment",
 						itemType: "shield",
 						icon: "/assets/shields/slovensko.webp",
 						x: 565,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 28,
-								price: 38,
+								id: 27,
+								price: 27,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
 								icon: "/assets/shields/slovensko.webp",
 								x: 565,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 28,
+										price: 38,
+										status: "locked",
+										type: "equipment",
+										itemType: "shield",
+										icon: "/assets/shields/slovensko.webp",
+										x: 565,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 10,
-				price: 13,
-				status: "locked",
-				type: "equipment",
-				itemType: "engine",
-				icon: "/assets/engines/steam.webp",
-				x: 625,
-				y: 150,
-				children: [
+					},
 					{
-						id: 29,
-						price: 23,
+						id: 10,
+						price: 13,
 						status: "locked",
 						type: "equipment",
 						itemType: "engine",
 						icon: "/assets/engines/steam.webp",
 						x: 625,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 30,
-								price: 36,
+								id: 29,
+								price: 23,
 								status: "locked",
 								type: "equipment",
 								itemType: "engine",
 								icon: "/assets/engines/steam.webp",
 								x: 625,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 30,
+										price: 36,
+										status: "locked",
+										type: "equipment",
+										itemType: "engine",
+										icon: "/assets/engines/steam.webp",
+										x: 625,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 11,
-				price: 20,
-				status: "locked",
-				type: "equipment",
-				itemType: "engine",
-				icon: "/assets/engines/skoda.webp",
-				x: 685,
-				y: 150,
-				children: [
+					},
 					{
-						id: 31,
-						price: 33,
+						id: 11,
+						price: 20,
 						status: "locked",
 						type: "equipment",
 						itemType: "engine",
 						icon: "/assets/engines/skoda.webp",
 						x: 685,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 32,
-								price: 48,
+								id: 31,
+								price: 33,
 								status: "locked",
 								type: "equipment",
 								itemType: "engine",
 								icon: "/assets/engines/skoda.webp",
 								x: 685,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 32,
+										price: 48,
+										status: "locked",
+										type: "equipment",
+										itemType: "engine",
+										icon: "/assets/engines/skoda.webp",
+										x: 685,
+										y: -50
+									}
+								]
 							}
 						]
-					}
-				]
-			},
-			{
-				id: 12,
-				price: 21,
-				status: "locked",
-				type: "equipment",
-				itemType: "engine",
-				icon: "/assets/engines/unity.webp",
-				x: 745,
-				y: 150,
-				children: [
+					},
 					{
-						id: 33,
-						price: 29,
+						id: 12,
+						price: 21,
 						status: "locked",
 						type: "equipment",
 						itemType: "engine",
 						icon: "/assets/engines/unity.webp",
 						x: 745,
-						y: 50,
+						y: 150,
 						children: [
 							{
-								id: 34,
-								price: 44,
+								id: 33,
+								price: 29,
 								status: "locked",
 								type: "equipment",
 								itemType: "engine",
 								icon: "/assets/engines/unity.webp",
 								x: 745,
-								y: -50
+								y: 50,
+								children: [
+									{
+										id: 34,
+										price: 44,
+										status: "locked",
+										type: "equipment",
+										itemType: "engine",
+										icon: "/assets/engines/unity.webp",
+										x: 745,
+										y: -50
+									}
+								]
 							}
 						]
 					}
 				]
-			}
-		]
-	};
+			};
+
+			localStorage.setItem("upgradeTree", JSON.stringify(root));
+		}
+	});
+
+	// let root: Node = JSON.parse(localStorage.getItem("upgradeTree") || "null") || {
+	// 	id: 1,
+	// 	price: 0,
+	// 	status: "purchased",
+	// 	x: 445,
+	// 	y: 300,
+	// 	type: "stats",
+	// 	icon: "/assets/ship.png",
+	// 	children: [
+	// 		{
+	// 			id: 2,
+	// 			price: 15,
+	// 			status: "purchased",
+	// 			type: "equipment",
+	// 			itemType: "gun",
+	// 			icon: "/assets/guns/smg.png",
+	// 			x: 145,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 13,
+	// 					price: 20,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "gun",
+	// 					icon: "/assets/guns/smg.png",
+	// 					x: 145,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 14,
+	// 							price: 30,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "gun",
+	// 							icon: "/assets/guns/smg.png",
+	// 							x: 145,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 3,
+	// 			price: 18,
+	// 			status: "purchased",
+	// 			type: "equipment",
+	// 			itemType: "gun",
+	// 			icon: "/assets/guns/bow.png",
+	// 			x: 205,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 15,
+	// 					price: 22,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "gun",
+	// 					icon: "/assets/guns/bow.png",
+	// 					x: 205,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 16,
+	// 							price: 35,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "gun",
+	// 							icon: "/assets/guns/bow.png",
+	// 							x: 205,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 4,
+	// 			price: 12,
+	// 			status: "purchased",
+	// 			type: "equipment",
+	// 			itemType: "gun",
+	// 			icon: "/assets/guns/mortar.png",
+	// 			x: 265,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 17,
+	// 					price: 25,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "gun",
+	// 					icon: "/assets/guns/mortar.png",
+	// 					x: 265,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 18,
+	// 							price: 40,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "gun",
+	// 							icon: "/assets/guns/mortar.png",
+	// 							x: 265,
+	// 							y: -50,
+	// 							children: []
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 5,
+	// 			price: 14,
+	// 			status: "purchased",
+	// 			type: "equipment",
+	// 			itemType: "gun",
+	// 			icon: "/assets/guns/laser.png",
+	// 			x: 325,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 19,
+	// 					price: 28,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "gun",
+	// 					icon: "/assets/guns/laser.png",
+	// 					x: 325,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 20,
+	// 							price: 45,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "gun",
+	// 							icon: "/assets/guns/laser.png",
+	// 							x: 325,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 6,
+	// 			price: 16,
+	// 			status: "purchased",
+	// 			type: "equipment",
+	// 			itemType: "shield",
+	// 			icon: "/assets/shields/cechy.webp",
+	// 			x: 385,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 21,
+	// 					price: 26,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "shield",
+	// 					icon: "/assets/shields/cechy.webp",
+	// 					x: 385,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 22,
+	// 							price: 50,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "shield",
+	// 							icon: "/assets/shields/cechy.webp",
+	// 							x: 385,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 7,
+	// 			price: 17,
+	// 			status: "purchased",
+	// 			type: "equipment",
+	// 			itemType: "shield",
+	// 			icon: "/assets/shields/morava.webp",
+	// 			x: 445,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 23,
+	// 					price: 24,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "shield",
+	// 					icon: "/assets/shields/morava.webp",
+	// 					x: 445,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 24,
+	// 							price: 32,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "shield",
+	// 							icon: "/assets/shields/morava.webp",
+	// 							x: 445,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 8,
+	// 			price: 19,
+	// 			status: "locked",
+	// 			type: "equipment",
+	// 			itemType: "shield",
+	// 			icon: "/assets/shields/slezsko.webp",
+	// 			x: 505,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 25,
+	// 					price: 21,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "shield",
+	// 					icon: "/assets/shields/slezsko.webp",
+	// 					x: 505,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 26,
+	// 							price: 34,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "shield",
+	// 							icon: "/assets/shields/slezsko.webp",
+	// 							x: 505,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 9,
+	// 			price: 11,
+	// 			status: "locked",
+	// 			type: "equipment",
+	// 			itemType: "shield",
+	// 			icon: "/assets/shields/slovensko.webp",
+	// 			x: 565,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 27,
+	// 					price: 27,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "shield",
+	// 					icon: "/assets/shields/slovensko.webp",
+	// 					x: 565,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 28,
+	// 							price: 38,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "shield",
+	// 							icon: "/assets/shields/slovensko.webp",
+	// 							x: 565,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 10,
+	// 			price: 13,
+	// 			status: "locked",
+	// 			type: "equipment",
+	// 			itemType: "engine",
+	// 			icon: "/assets/engines/steam.webp",
+	// 			x: 625,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 29,
+	// 					price: 23,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "engine",
+	// 					icon: "/assets/engines/steam.webp",
+	// 					x: 625,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 30,
+	// 							price: 36,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "engine",
+	// 							icon: "/assets/engines/steam.webp",
+	// 							x: 625,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 11,
+	// 			price: 20,
+	// 			status: "locked",
+	// 			type: "equipment",
+	// 			itemType: "engine",
+	// 			icon: "/assets/engines/skoda.webp",
+	// 			x: 685,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 31,
+	// 					price: 33,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "engine",
+	// 					icon: "/assets/engines/skoda.webp",
+	// 					x: 685,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 32,
+	// 							price: 48,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "engine",
+	// 							icon: "/assets/engines/skoda.webp",
+	// 							x: 685,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		},
+	// 		{
+	// 			id: 12,
+	// 			price: 21,
+	// 			status: "locked",
+	// 			type: "equipment",
+	// 			itemType: "engine",
+	// 			icon: "/assets/engines/unity.webp",
+	// 			x: 745,
+	// 			y: 150,
+	// 			children: [
+	// 				{
+	// 					id: 33,
+	// 					price: 29,
+	// 					status: "locked",
+	// 					type: "equipment",
+	// 					itemType: "engine",
+	// 					icon: "/assets/engines/unity.webp",
+	// 					x: 745,
+	// 					y: 50,
+	// 					children: [
+	// 						{
+	// 							id: 34,
+	// 							price: 44,
+	// 							status: "locked",
+	// 							type: "equipment",
+	// 							itemType: "engine",
+	// 							icon: "/assets/engines/unity.webp",
+	// 							x: 745,
+	// 							y: -50
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		}
+	// 	]
+	// };
 
 	let slots: Slot[] = [
 		{ id: "slot1", x: 155, y: 300, type: "engine", item: null },
@@ -437,7 +839,7 @@
 
 	function flattenTree(node: Node, depth = 0): (Node & { depth: number })[] {
 		let nodes = [{ ...node, depth }];
-		if (node.children) {
+		if (node?.children) {
 			for (const child of node.children) {
 				nodes.push(...flattenTree(child, depth + 1));
 			}
@@ -447,7 +849,7 @@
 
 	function computeLines(node: Node) {
 		let result: typeof lines = [];
-		if (node.children) {
+		if (node?.children) {
 			for (const child of node.children) {
 				const dx = child.x - node.x;
 				const dy = child.y - node.y;
@@ -489,6 +891,25 @@
 		}
 	}
 
+	function applyRootUpdate(newRoot: Node) {
+		root = newRoot; // triggers reactivity
+		localStorage.setItem("upgradeTree", JSON.stringify(root));
+	}
+
+	function updateNodeStatus(root: Node, id: number, status: NodeStatus): Node {
+		if (root.id === id) {
+			return { ...root, status };
+		}
+		if (!root.children) return root;
+
+		return {
+			...root,
+			children: root.children.map((child) => updateNodeStatus(child, id, status))
+		};
+	}
+
+	let errorMsg: string = "";
+
 	async function purchase(node: Node) {
 		const formData = new FormData();
 		formData.set("cost", node.price.toString());
@@ -499,15 +920,22 @@
 		});
 
 		const data = await res.json();
-
-		if (data.error) {
-			alert(data.error);
+		console.log(data);
+		if (data.type === "failure") {
+			errorMsg = JSON.parse(data.data)[1];
 			return;
 		}
 
-		alert("Upgrade purchased successfully!");
-		node.status = "purchased";
+		root = updateNodeStatus(root, node.id, "purchased");
 		buyModalNode = null;
+
+		// onMount(() => {
+		localStorage.setItem("upgradeTree", JSON.stringify(root));
+		// });
+
+		setTimeout(() => {
+			location.reload();
+		}, 2000);
 	}
 
 	$: containerWidth = Math.max(...allNodes.map((n) => n.x)) + NODE_RADIUS + 20;
@@ -552,8 +980,8 @@
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<button
 				class={`absolute flex items-center justify-center rounded-full border-2 font-bold transition-transform duration-200
-          ${node.status === "purchased" ? "border-green-700 bg-green-500 text-white hover:scale-110" : ""}
-          ${node.status === "locked" ? "border-gray-400 bg-gray-300 text-gray-600" : ""}`}
+          ${node.status === "purchased" ? "cursor-grab border-green-700 bg-green-500 text-white hover:scale-110" : ""}
+          ${node.status === "locked" ? "cursor-pointer border-gray-400 bg-gray-300 text-gray-600" : ""}`}
 				style="width: {NODE_RADIUS * 2}px; height: {NODE_RADIUS * 2}px; left: {node.x}px; top: {node.y}px;"
 				on:mouseenter={() => handleHover(node)}
 				on:mouseleave={clearHover}
@@ -613,12 +1041,19 @@
 						</div>
 					</div>
 
-					<p class="mb-4 text-lg font-semibold text-green-600">
+					<p class=" text-lg font-semibold">
 						Price: {buyModalNode.price}$
 					</p>
+					<p class="mb-4 text-secondary-400">{errorMsg}</p>
 
 					<div class="flex justify-end gap-2">
-						<button class="cursor-pointer rounded bg-gray-300 px-3 py-1 text-sm hover:bg-gray-400" on:click={() => (buyModalNode = null)}>
+						<button
+							class="cursor-pointer rounded bg-gray-300 px-3 py-1 text-sm hover:bg-gray-400"
+							on:click={() => {
+								buyModalNode = null;
+								errorMsg = "";
+							}}
+						>
 							Cancel
 						</button>
 

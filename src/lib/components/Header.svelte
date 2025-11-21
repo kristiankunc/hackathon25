@@ -12,7 +12,7 @@
 
 		<nav class="absolute left-1/2 z-10 flex -translate-x-1/2 justify-center gap-4">
 			<a href="/quests" class="transition-colors hover:text-accent">Quests</a>
-			<a href="/" class="transition-colors hover:text-accent">About</a>
+			<a href="/leaderboard" class="transition-colors hover:text-accent">Leaderboard</a>
 		</nav>
 
 		<div class="flex items-center gap-4 text-background">

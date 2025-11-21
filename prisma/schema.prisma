@@ -2,12 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client"
-    output   = "generated/prisma"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 datasource db {
-    provider = "sqlite"
+  provider = "sqlite"
 }
 
 model User {
@@ -16,11 +16,10 @@ model User {
   createdAt DateTime @default(now())
   money     Int
   points    Int
-
 }
 
 model BugFixQuest {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   name        String
   description String
   codeSnippet String
@@ -29,8 +28,8 @@ model BugFixQuest {
 }
 
 model RealOrFakeQuest {
-  id          Int      @id @default(autoincrement())
-  name        String
-  rewardMoney Int
+  id               Int    @id @default(autoincrement())
+  name             String
+  rewardMoney      Int
   picturesFilepath String
 }

@@ -1,4 +1,5 @@
 import { prisma } from "$lib/prisma";
+import { fail } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 
 export const actions: Actions = {
@@ -8,11 +9,11 @@ export const actions: Actions = {
 
 		const user = await prisma.user.findFirst();
 		if (!user) {
-			return { error: "User not found" };
+			return fail(404, { error: "User not found" });
 		}
 
 		if (user.money < cost) {
-			return { error: "Not enough money" };
+			return fail(400, { error: "Not enough money" });
 		}
 
 		const updated = await prisma.user.update({
