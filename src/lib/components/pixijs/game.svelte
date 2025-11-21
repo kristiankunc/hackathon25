@@ -3,7 +3,6 @@
 	import Spaceship, { buttonSprites, slotCoordinates, type ShipAttachment } from "./spaceship";
 	import { Application, Assets, Container, Sprite, Ticker, Graphics } from "pixi.js";
 	import type { Projectile } from "./projectile";
-	import { goto } from "$app/navigation";
 
 	const initPixieApp = async () => {
 		const parent = <HTMLDivElement>document.getElementById("render-div");
@@ -145,88 +144,6 @@
 		}
 	}
 
-	let gameOver = false;
-
-	function displayGameOver(winner: "player" | "enemy") {
-		const parent = document.getElementById("render-div") || document.body;
-		if (!parent) return;
-		if (document.getElementById("game-over-overlay")) return; // already shown
-
-		const overlay = document.createElement("div");
-		overlay.id = "game-over-overlay";
-		Object.assign(overlay.style, {
-			position: "fixed",
-			inset: "0",
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-			background: "rgba(0,0,0,0.6)",
-			zIndex: "9999"
-		});
-
-		const modal = document.createElement("div");
-		Object.assign(modal.style, {
-			background: "#111",
-			color: "#fff",
-			padding: "24px",
-			borderRadius: "8px",
-			minWidth: "320px",
-			textAlign: "center",
-			boxShadow: "0 6px 24px rgba(0,0,0,0.6)"
-		});
-
-		const title = document.createElement("h2");
-		title.textContent = "Game Over";
-		title.style.margin = "0 0 12px";
-
-		const msg = document.createElement("p");
-		msg.textContent = winner === "player" ? "You win!" : "You lose!";
-		msg.style.margin = "0 0 16px";
-
-		const buttons = document.createElement("div");
-		Object.assign(buttons.style, {
-			display: "flex",
-			justifyContent: "center",
-			gap: "12px"
-		});
-
-		const restartBtn = document.createElement("button");
-		restartBtn.textContent = "Restart";
-		Object.assign(restartBtn.style, { padding: "8px 12px", cursor: "pointer" });
-		restartBtn.addEventListener("click", () => {
-			window.location.reload();
-		});
-
-		const closeBtn = document.createElement("a");
-		closeBtn.textContent = "Main menu";
-		Object.assign(closeBtn.style, { padding: "8px 12px", cursor: "pointer" });
-		closeBtn.addEventListener("click", () => {
-			goto("/");
-			overlay.remove();
-		});
-
-		buttons.append(restartBtn, closeBtn);
-		modal.append(title, msg, buttons);
-		overlay.appendChild(modal);
-
-		(parent as HTMLElement).appendChild(overlay);
-
-		// // click outside to close
-		// overlay.addEventListener("click", (e) => {
-		// 	if (e.target === overlay) overlay.remove();
-		// });
-	}
-
-	function checkGameOver(playerHealth: number, enemyHealth: number) {
-		if (playerHealth <= 0 && !gameOver) {
-			gameOver = true;
-			displayGameOver("enemy");
-		} else if (enemyHealth <= 0 && !gameOver) {
-			gameOver = true;
-			displayGameOver("player");
-		}
-	}
-
 	onMount(async () => {
 		(async () => {
 			const { app, rootContainer, parent } = await initPixieApp();
@@ -326,11 +243,6 @@
 				enemyHealth.setHealth(enemy.health / enemy.MAX_HEALTH);
 			});
 
-			app.ticker.add(() => {
-				if (gameOver) return;
-				checkGameOver(player.health, enemy.health);
-			});
-
 			// Cleanup on unmount
 			return () => {
 				window.removeEventListener("keydown", player.keyboardHandler);
@@ -338,6 +250,7 @@
 			};
 		})();
 	});
+
 
 	function randomBoolean(): boolean {
 		return Math.random() >= 0.5;
