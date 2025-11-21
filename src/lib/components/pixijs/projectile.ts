@@ -31,7 +31,7 @@ abstract class Projectile {
 
 class Bullet extends Projectile {
 	private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite) {
-		super(enemy, speed, posX, posY, sprite, 10);
+		super(enemy, speed, posX, posY - 75, sprite, 10);
 	}
 
 	static async create(enemy: Spaceship, direction: "right" | "left", posX: number, posY: number): Promise<Bullet> {
@@ -58,26 +58,27 @@ class Bullet extends Projectile {
 	}
 }
 
-class MortarShot extends Projectile {
+class MortarBall extends Projectile {
 	private xVel: number;
 	private yVel: number;
 
 	private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite) {
-		super(enemy, speed, posX, posY, sprite, 20);
+		super(enemy, speed, posX - 45, posY + 80, sprite, 20);
 
 		const x = enemy.spaceship_sprite.x;
 		const y = enemy.spaceship_sprite.y;
 
 		const distance = Math.sqrt((x - posX) ** 2 + (y - posY) ** 2);
-		this.xVel = (-(x - posX) / distance) * speed;
-		this.yVel = (-(y - posY) / distance) * speed;
+		this.xVel = ((x - posX) / distance) * speed;
+		this.yVel = ((y - posY) / distance) * speed;
 	}
 
 	static async create(enemy: Spaceship, posX: number, posY: number): Promise<Bullet> {
 		const texture = await Assets.load("https://cdn-icons-png.flaticon.com/512/8089/8089316.png");
 		const sprite = new Sprite(texture);
+		sprite.setSize(50);
 
-		return new MortarShot(enemy, 6, posX, posY, sprite);
+		return new MortarBall(enemy, 6, posX, posY, sprite);
 	}
 
 	move(deltaTime: number) {
@@ -97,4 +98,45 @@ class MortarShot extends Projectile {
 	}
 }
 
-export { Projectile, Bullet, MortarShot };
+class Laser extends Projectile {
+	private player: Spaceship;
+
+	private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite, player: Spaceship) {
+		super(enemy, speed, posX, posY, sprite, 0.15);
+		this.player = player;
+	}
+
+	static async create(enemy: Spaceship, direction: "right" | "left", posX: number, posY: number, player: Spaceship): Promise<Laser> {
+		const texture = await Assets.load("/assets/guns/laserbeam.png");
+		const sprite = new Sprite(texture);
+		sprite.setSize(50);
+		sprite.width = 1500;
+
+		if (direction == "left") {
+			sprite.pivot.x = sprite.width;
+		}
+
+		return new Laser(enemy, 0, posX, posY, sprite, player);
+	}
+
+	move(deltaTime: number) {
+		if (this.sprite.destroyed) {
+			return true;
+		}
+
+		console.log("[+] Laser move");
+		this.sprite.x = this.player.spaceship_sprite.x - 15;
+		this.sprite.y = this.player.spaceship_sprite.y + 30;
+
+		if (this.enemy.checkForHit(this.sprite, this.damage)) {
+			this.onHit();
+
+			return false;
+		}
+		return false;
+	}
+
+	onHit(): void {}
+}
+
+export { Projectile, Bullet, MortarBall, Laser };
