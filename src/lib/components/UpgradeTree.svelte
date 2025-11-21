@@ -11,6 +11,7 @@
 		icon: string;
 		x: number;
 		y: number;
+		price: number;
 		children?: Node[];
 	}
 
@@ -28,6 +29,7 @@
 
 	let root: Node = {
 		id: 1,
+		price: 0,
 		status: "purchased",
 		x: 445,
 		y: 300,
@@ -36,6 +38,7 @@
 		children: [
 			{
 				id: 2,
+				price: 15,
 				status: "purchased",
 				type: "equipment",
 				itemType: "gun",
@@ -45,6 +48,7 @@
 				children: [
 					{
 						id: 13,
+						price: 20,
 						status: "locked",
 						type: "equipment",
 						itemType: "gun",
@@ -54,6 +58,7 @@
 						children: [
 							{
 								id: 14,
+								price: 30,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
@@ -67,6 +72,7 @@
 			},
 			{
 				id: 3,
+				price: 18,
 				status: "purchased",
 				type: "equipment",
 				itemType: "gun",
@@ -76,6 +82,7 @@
 				children: [
 					{
 						id: 15,
+						price: 22,
 						status: "locked",
 						type: "equipment",
 						itemType: "gun",
@@ -85,6 +92,7 @@
 						children: [
 							{
 								id: 16,
+								price: 35,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
@@ -98,6 +106,7 @@
 			},
 			{
 				id: 4,
+				price: 12,
 				status: "purchased",
 				type: "equipment",
 				itemType: "gun",
@@ -107,6 +116,7 @@
 				children: [
 					{
 						id: 17,
+						price: 25,
 						status: "locked",
 						type: "equipment",
 						itemType: "gun",
@@ -116,6 +126,7 @@
 						children: [
 							{
 								id: 18,
+								price: 40,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
@@ -130,6 +141,7 @@
 			},
 			{
 				id: 5,
+				price: 14,
 				status: "purchased",
 				type: "equipment",
 				itemType: "gun",
@@ -139,6 +151,7 @@
 				children: [
 					{
 						id: 19,
+						price: 28,
 						status: "locked",
 						type: "equipment",
 						itemType: "gun",
@@ -148,6 +161,7 @@
 						children: [
 							{
 								id: 20,
+								price: 45,
 								status: "locked",
 								type: "equipment",
 								itemType: "gun",
@@ -161,6 +175,7 @@
 			},
 			{
 				id: 6,
+				price: 16,
 				status: "purchased",
 				type: "equipment",
 				itemType: "shield",
@@ -170,6 +185,7 @@
 				children: [
 					{
 						id: 21,
+						price: 26,
 						status: "locked",
 						type: "equipment",
 						itemType: "shield",
@@ -179,6 +195,7 @@
 						children: [
 							{
 								id: 22,
+								price: 50,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
@@ -192,6 +209,7 @@
 			},
 			{
 				id: 7,
+				price: 17,
 				status: "purchased",
 				type: "equipment",
 				itemType: "shield",
@@ -201,6 +219,7 @@
 				children: [
 					{
 						id: 23,
+						price: 24,
 						status: "locked",
 						type: "equipment",
 						itemType: "shield",
@@ -210,6 +229,7 @@
 						children: [
 							{
 								id: 24,
+								price: 32,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
@@ -223,6 +243,7 @@
 			},
 			{
 				id: 8,
+				price: 19,
 				status: "locked",
 				type: "equipment",
 				itemType: "shield",
@@ -232,6 +253,7 @@
 				children: [
 					{
 						id: 25,
+						price: 21,
 						status: "locked",
 						type: "equipment",
 						itemType: "shield",
@@ -241,6 +263,7 @@
 						children: [
 							{
 								id: 26,
+								price: 34,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
@@ -254,6 +277,7 @@
 			},
 			{
 				id: 9,
+				price: 11,
 				status: "locked",
 				type: "equipment",
 				itemType: "shield",
@@ -263,6 +287,7 @@
 				children: [
 					{
 						id: 27,
+						price: 27,
 						status: "locked",
 						type: "equipment",
 						itemType: "shield",
@@ -272,6 +297,7 @@
 						children: [
 							{
 								id: 28,
+								price: 38,
 								status: "locked",
 								type: "equipment",
 								itemType: "shield",
@@ -285,6 +311,7 @@
 			},
 			{
 				id: 10,
+				price: 13,
 				status: "locked",
 				type: "equipment",
 				itemType: "engine",
@@ -294,6 +321,7 @@
 				children: [
 					{
 						id: 29,
+						price: 23,
 						status: "locked",
 						type: "equipment",
 						itemType: "engine",
@@ -303,6 +331,7 @@
 						children: [
 							{
 								id: 30,
+								price: 36,
 								status: "locked",
 								type: "equipment",
 								itemType: "engine",
@@ -316,6 +345,7 @@
 			},
 			{
 				id: 11,
+				price: 20,
 				status: "locked",
 				type: "equipment",
 				itemType: "engine",
@@ -325,6 +355,7 @@
 				children: [
 					{
 						id: 31,
+						price: 33,
 						status: "locked",
 						type: "equipment",
 						itemType: "engine",
@@ -334,6 +365,7 @@
 						children: [
 							{
 								id: 32,
+								price: 48,
 								status: "locked",
 								type: "equipment",
 								itemType: "engine",
@@ -347,6 +379,7 @@
 			},
 			{
 				id: 12,
+				price: 21,
 				status: "locked",
 				type: "equipment",
 				itemType: "engine",
@@ -356,6 +389,7 @@
 				children: [
 					{
 						id: 33,
+						price: 29,
 						status: "locked",
 						type: "equipment",
 						itemType: "engine",
@@ -365,6 +399,7 @@
 						children: [
 							{
 								id: 34,
+								price: 44,
 								status: "locked",
 								type: "equipment",
 								itemType: "engine",
@@ -398,6 +433,7 @@
 	let modalPos = { x: 0, y: 0 };
 
 	let draggingNode: Node | null = null;
+	let buyModalNode: Node | null = null;
 
 	function flattenTree(node: Node, depth = 0): (Node & { depth: number })[] {
 		let nodes = [{ ...node, depth }];
@@ -453,6 +489,27 @@
 		}
 	}
 
+	async function purchase(node: Node) {
+		const formData = new FormData();
+		formData.set("cost", node.price.toString());
+
+		const res = await fetch("?/purchase", {
+			method: "POST",
+			body: formData
+		});
+
+		const data = await res.json();
+
+		if (data.error) {
+			alert(data.error);
+			return;
+		}
+
+		alert("Upgrade purchased successfully!");
+		node.status = "purchased";
+		buyModalNode = null;
+	}
+
 	$: containerWidth = Math.max(...allNodes.map((n) => n.x)) + NODE_RADIUS + 20;
 	$: containerHeight = Math.max(...allNodes.map((n) => n.y)) + NODE_RADIUS;
 </script>
@@ -492,21 +549,25 @@
 		</svg>
 
 		{#each allNodes as node}
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<button
 				class={`absolute flex items-center justify-center rounded-full border-2 font-bold transition-transform duration-200
           ${node.status === "purchased" ? "border-green-700 bg-green-500 text-white hover:scale-110" : ""}
-          ${node.status === "locked" ? "cursor-not-allowed border-gray-400 bg-gray-300 text-gray-600" : ""}`}
+          ${node.status === "locked" ? "border-gray-400 bg-gray-300 text-gray-600" : ""}`}
 				style="width: {NODE_RADIUS * 2}px; height: {NODE_RADIUS * 2}px; left: {node.x}px; top: {node.y}px;"
 				on:mouseenter={() => handleHover(node)}
 				on:mouseleave={clearHover}
 				draggable={node.status === "purchased" && node.type === "equipment"}
 				on:dragstart={() => handleDragStart(node)}
+				on:click={() => {
+					if (node.status === "locked") {
+						buyModalNode = node;
+					}
+				}}
 			>
 				{#if node.depth === 0 || node.depth === 1}
-					<!-- main tier nodes show icon -->
 					<img src={node.icon} alt={`Node ${node.id}`} class="pointer-events-none h-12 w-12 object-contain" />
 				{:else}
-					<!-- children show text -->
 					<span class="text-xs font-bold">
 						{node.depth === 2 ? "Lvl. 2" : "Lvl. 3"}
 					</span>
@@ -515,16 +576,60 @@
 		{/each}
 
 		{#if hoveredNode}
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
-				class="pointer-events-none absolute z-10 rounded-lg border border-gray-300 bg-white p-2 text-sm shadow-lg"
+				class="animate-fade absolute z-200 w-40 rounded-lg border border-gray-300 bg-white p-3 shadow-xl"
 				style="left: {modalPos.x}px; top: {modalPos.y}px; transform: translate(-50%, 0);"
 			>
-				<strong>Node {hoveredNode.id}</strong><br />
-				Status: {hoveredNode.status}<br />
-				Type: {hoveredNode.type}<br />
-				{#if hoveredNode.itemType}
-					Item: {hoveredNode.itemType}
-				{/if}
+				<div class="mb-1 text-sm font-semibold">
+					Upgrade #{hoveredNode.id}
+				</div>
+
+				<div class="text-xs text-gray-700">
+					Status: <span class="font-medium">{hoveredNode.status}</span><br />
+					Type: <span class="font-medium">{hoveredNode.type}</span>
+
+					{#if hoveredNode.itemType}
+						<br />Item: <span class="font-medium">{hoveredNode.itemType}</span>
+					{/if}
+				</div>
+			</div>
+		{/if}
+
+		{#if buyModalNode}
+			<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+				<div class="relative w-80 rounded-lg bg-white p-6 shadow-xl">
+					<h2 class="mb-3 text-xl font-bold text-gray-800">
+						Buy Upgrade #{buyModalNode.id}
+					</h2>
+
+					<div class="mb-4 flex items-center gap-3">
+						<img src={buyModalNode.icon} alt="icon" class="h-12 w-12 object-contain" />
+						<div>
+							<p class="text-sm text-gray-700 capitalize">{buyModalNode.type}</p>
+							{#if buyModalNode.itemType}
+								<p class="text-xs text-gray-500">Type: {buyModalNode.itemType}</p>
+							{/if}
+						</div>
+					</div>
+
+					<p class="mb-4 text-lg font-semibold text-green-600">
+						Price: {buyModalNode.price}$
+					</p>
+
+					<div class="flex justify-end gap-2">
+						<button class="cursor-pointer rounded bg-gray-300 px-3 py-1 text-sm hover:bg-gray-400" on:click={() => (buyModalNode = null)}>
+							Cancel
+						</button>
+
+						<button
+							class="cursor-pointer rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
+							on:click={() => purchase(buyModalNode!)}
+						>
+							Buy
+						</button>
+					</div>
+				</div>
 			</div>
 		{/if}
 	</div>
