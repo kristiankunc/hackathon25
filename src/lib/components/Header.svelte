@@ -5,11 +5,14 @@
 
 <header class="w-screen bg-background-950 text-text">
 	<div class="flex w-full items-center justify-between px-4 py-4">
-		<a href="/" class="text-xl font-bold">MySite</a>
+		<a href="/" class="flex items-center text-xl font-bold">
+			<span class="material-symbols-outlined mr-2">rocket_launch</span>
+			CodeShips</a
+		>
 
 		<nav class="absolute left-1/2 z-10 flex -translate-x-1/2 justify-center gap-4">
 			<a href="/quests" class="transition-colors hover:text-accent">Quests</a>
-			<a href="/" class="transition-colors hover:text-accent">Link 2</a>
+			<a href="/" class="transition-colors hover:text-accent">About</a>
 		</nav>
 
 		<div class="flex items-center gap-4 text-background">

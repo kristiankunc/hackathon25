@@ -2,6 +2,9 @@
 	import { onMount } from "svelte";
 	import { Application, Assets, Container, Sprite, Ticker } from "pixi.js";
 	import Spaceship, { buttonSprites, slotCoordinates, type ShipAttachment } from "./spaceship";
+	import { Application, Assets, Container, Sprite, Ticker, Graphics } from "pixi.js";
+	import Spaceship, { slotCoordinates } from "./spaceship";
+	import type { Projectile } from "./projectile";
 
 	const initPixieApp = async () => {
 		const parent = <HTMLDivElement>document.getElementById("render-div");
@@ -69,17 +72,67 @@
 		return buttonsContainer;
 	};
 
+	async function createHealthBar(options: { x: number; y: number; width: number; height: number }) {
+		const { x, y, width, height } = options;
+
+		const barTexture = await Assets.load("/assets/Bar.png");
+		const heartTexture = await Assets.load("/assets/Heart.png");
+
+		const container = new Container();
+
+		const emptyBar = new Sprite(barTexture);
+		emptyBar.width = width;
+		emptyBar.height = height;
+
+		const fillBar = new Graphics();
+		fillBar.beginFill(0xff0000);
+		fillBar.drawRect(0, 0, width, height);
+		fillBar.endFill();
+
+		let icon: Sprite | null = null;
+		let offsetX = 0;
+
+		icon = new Sprite(heartTexture);
+		icon.width = height;
+		icon.height = height;
+		icon.x = 0;
+		icon.y = 0;
+
+		offsetX = icon.width + 8;
+		container.addChild(icon);
+
+		emptyBar.x = offsetX;
+		fillBar.x = offsetX;
+
+		container.addChild(fillBar);
+		container.addChild(emptyBar);
+
+		container.x = x;
+		container.y = y;
+
+		return {
+			container,
+			setHealth: (value: number) => {
+				const pct = Math.max(0, Math.min(1, value));
+				fillBar.clear();
+				fillBar.beginFill(0xff0000);
+				fillBar.drawRect(0, 0, width * pct, height);
+				fillBar.endFill();
+			}
+		};
+	}
+
 	onMount(async () => {
 		(async () => {
 			const { app, rootContainer, parent } = await initPixieApp();
 
 			const friendlyLoadout: ShipAttachment[] = [
-				{ name: "LASER", position: slotCoordinates.lWing1 },
+        { name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
 				{ name: "STEN", position: slotCoordinates.rWing1 },
 				{ name: "BOW", position: slotCoordinates.rWing2 },
 				{ name: "SKODA_ENGINE", position: slotCoordinates.centerBack },
-				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront },
+        { name: "CECHY_SHIELD", position: slotCoordinates.centerFront },
 				{
 					name: "SLOVENSKO_SHIELD",
 					position: slotCoordinates.centerBack
@@ -93,13 +146,23 @@
 					position: slotCoordinates.engine1
 				}
 			];
+			const buttonsContainer = await createButtons(app);
+			let projectiles: Projectile[] = []
 
+			rootContainer.addChild(buttonsContainer);
+
+			const players = []
+
+			const player = await Spaceship.create("friendly", projectiles, friendlyLoadout)
 			const buttonsContainer = await createButtons(app, friendlyLoadout);
 
 			rootContainer.addChild(buttonsContainer);
 
 			const player = await Spaceship.create("friendly", friendlyLoadout);
 			const enemy = await Spaceship.create("enemy", [
+        
+
+			const enemy = await Spaceship.create("enemy", projectiles, [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
 				{ name: "STEN", position: slotCoordinates.rWing1 },
@@ -110,6 +173,8 @@
 				},
 				{ name: "MORAVA_SHIELD", position: slotCoordinates.centerFront }
 			]);
+
+			players.push(player, enemy);
 
 			window.addEventListener("keydown", player.keyboardHandler);
 			window.addEventListener("keyup", player.keyboardHandler);
@@ -123,10 +188,43 @@
 			rootContainer.addChild(player.spaceship_sprite);
 			rootContainer.addChild(enemy.spaceship_sprite);
 
+			const playerHealth = await createHealthBar({
+				x: 40,
+				y: 40,
+				width: 250,
+				height: 32
+			});
+
+			const enemyHealth = await createHealthBar({
+				x: app.screen.width - 330,
+				y: 40,
+				width: 250,
+				height: 32
+			});
+
+			rootContainer.addChild(playerHealth.container);
+			rootContainer.addChild(enemyHealth.container);
+
+			playerHealth.setHealth(player.health/player.MAX_HEALTH);
+			enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
+
 			// Main loop
 			app.ticker.add((ticker) => {
-				player.move(ticker.deltaTime, app.screen.width, app.screen.height);
+				player.update(ticker, app.screen.width, app.screen.height, enemy, rootContainer);
+				enemy.update(ticker, app.screen.width, app.screen.height, player, rootContainer);
 			});
+			app.ticker.add((ticker) => {
+				projectiles.forEach((projectile, index) => {
+					const didHit = projectile.move(ticker.deltaTime);
+					if (didHit) {
+						projectiles.splice(index, 1);
+					}
+				})
+			});
+			app.ticker.add((ticker) => {
+				playerHealth.setHealth(player.health/player.MAX_HEALTH);
+				enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
+			})
 
 			// Cleanup on unmount
 			return () => {

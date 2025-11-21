@@ -2,18 +2,6 @@
 	import { onMount } from "svelte";
 	import { Application, Assets, Container, Sprite, type SpriteOptions } from "pixi.js";
 
-	let slotCoordinates = {
-		lWing1: { x: 0, y: 0 },
-		lWing2: { x: 0, y: 0 },
-		rWing1: { x: 0, y: 0 },
-		rWing2: { x: 0, y: 0 },
-		engine1: { x: 0, y: 0 },
-		engine2: { x: 0, y: 0 },
-		centerFront: { x: 0, y: 0 },
-		centerMid: { x: 0, y: 0 },
-		centerBack: { x: 0, y: 0 }
-	};
-
 	let sprites = {
 		SPACESHIP: {
 			texturePath: "/assets/ship.png",
@@ -89,6 +77,16 @@
 			// Initialize the application
 			await app.init({ background: "#fafafe", resizeTo: parent });
 
+			const bgTexture = await Assets.load("/assets/bg.jpg");
+			const bg = new Sprite(bgTexture);
+			bg.alpha = 0.5;
+
+			// scale background to fill the entire renderer
+			bg.width = app.renderer.width;
+			bg.height = app.renderer.height;
+
+			app.stage.addChildAt(bg, 0); // put background at the bottom
+
 			// Append the application canvas to the document body
 			parent.appendChild(app.canvas);
 
@@ -110,7 +108,7 @@
 			mySpaceship.x = 225;
 			mySpaceship.y = app.renderer.height / 2;
 
-			slotCoordinates = {
+			const slotCoordinates = {
 				lWing1: { x: 75, y: 115 },
 				lWing2: { x: 130, y: 200 },
 				rWing1: { x: 75, y: -115 },
@@ -121,27 +119,6 @@
 				centerMid: { x: -100, y: 0 },
 				centerBack: { x: 50, y: 0 }
 			};
-
-			/*
-			for (const slot in slotCoordinates) {
-				const coord = slotCoordinates[slot as keyof typeof slotCoordinates];
-				const laser = new Sprite(sprites.LASER.texture!);
-				laser.anchor.set(0.5);
-				laser.scale.set(0.1);
-				laser.scale.x *= Math.sign(mySpaceship.scale.x);
-				laser.x = mySpaceship.x + coord.x * mySpaceship.scale.x;
-				laser.y = mySpaceship.y + coord.y * mySpaceship.scale.y;
-				container.addChild(laser);
-			}
-			*/
-
-			// duplicate the spaceship sprite and flip it horizontally to represent an enemy ship
-			const enemySpaceship = new Sprite(sprites.SPACESHIP.texture!);
-			container.addChild(enemySpaceship);
-			enemySpaceship.scale.set(0.6);
-			enemySpaceship.anchor.set(0.5);
-			enemySpaceship.x = app.renderer.width - 225;
-			enemySpaceship.y = app.renderer.height / 2;
 
 			// Test all sprites at slot positions on the spaceship
 			const slotKeys = Object.keys(slotCoordinates) as Array<keyof typeof slotCoordinates>;
@@ -155,19 +132,32 @@
 				const slot = slotKeys[index % slotKeys.length];
 				const coord = slotCoordinates[slot];
 
-				const testSprite = new Sprite(spriteInfo.texture!);
-				testSprite.anchor.set(0.5);
-				testSprite.scale.set(spriteInfo.scale);
+				const part = new Sprite(spriteInfo.texture!);
+				part.anchor.set(0.5);
+				part.scale.set(spriteInfo.scale);
+
 				if (spriteInfo.invert) {
-					testSprite.scale.x *= Math.sign(mySpaceship.scale.x);
+					part.scale.x *= Math.sign(mySpaceship.scale.x);
 				}
-				testSprite.x = mySpaceship.x + coord.x * mySpaceship.scale.x;
-				testSprite.y = mySpaceship.y + coord.y * mySpaceship.scale.y;
-				container.addChild(testSprite);
+
+				// IMPORTANT: positions are relative to the spaceship’s center
+				part.x = coord.x;
+				part.y = coord.y;
+
+				// ADD PART TO SPACESHIP, NOT TO CONTAINER
+				mySpaceship.addChild(part);
 			});
 
+			let vx = 5;
 			app.ticker.add(() => {
 				// Add animation logic here if needed
+				mySpaceship.x += vx;
+
+				// bounce off screen edges
+				const right = app.renderer.width - mySpaceship.width * 0.5;
+				console.log(right);
+
+				if (mySpaceship.x > right + 500) mySpaceship.x = -200;
 			});
 		})();
 	});
