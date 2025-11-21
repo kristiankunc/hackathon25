@@ -336,7 +336,20 @@
 			// Main loop
 			app.ticker.add((ticker) => {
 				player.update(ticker, app.screen.width, app.screen.height, enemy, rootContainer);
-				enemy.changeState(new KeyboardEvent("keydown", { key: autoPlay() }), randomBoolean());
+				{
+					const e = enemy as any;
+					// accumulate milliseconds until 500ms passed
+					const deltaMs = (ticker as any).deltaMS ?? ((ticker as any).delta || 1) * 16.6667;
+					e.__autoplayDelay = (e.__autoplayDelay || 0) + deltaMs;
+
+					if (e.__autoplayDelay >= 1000) {
+						e.__autoplayStarted = true;
+					}
+
+					if (e.__autoplayStarted) {
+						enemy.changeState(new KeyboardEvent("keydown", { key: autoPlay() }), randomBoolean());
+					}
+				}
 				enemy.update(ticker, app.screen.width, app.screen.height, player, rootContainer);
 			});
 			app.ticker.add((ticker) => {
