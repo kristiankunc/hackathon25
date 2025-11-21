@@ -4,10 +4,12 @@ import Spaceship from "./spaceship";
 abstract class Projectile {
     public sprite: Sprite;
     protected speed: number;
+    protected enemy: Spaceship;
 
-    protected constructor(speed: number, posX: number, posY: number, sprite: Sprite) {
+    protected constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite) {
         this.speed = speed;
         this.sprite = sprite;
+        this.enemy = enemy;
 
         this.setCenterPos(posX, posY);
     }
@@ -24,15 +26,15 @@ abstract class Projectile {
 }
 
 class Bullet extends Projectile {
-    private constructor(speed: number, posX: number, posY: number, sprite: Sprite) {
-        super(speed, posX, posY, sprite);
+    private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite) {
+        super(enemy, speed, posX, posY, sprite);
     }
 
-    static async create(direction: "right" | "left", posX: number, posY: number): Promise<Bullet> {
+    static async create(enemy: Spaceship, direction: "right" | "left", posX: number, posY: number): Promise<Bullet> {
         const texture = await Assets.load("https://cdn-icons-png.flaticon.com/512/2218/2218103.png");
         const sprite = new Sprite(texture);
 
-        return new Bullet(8 * (direction == "left" ? -1 : 1), posX, posY, sprite);
+        return new Bullet(enemy, 8 * (direction == "left" ? -1 : 1), posX, posY, sprite);
     }
 
     move(deltaTime: number) {
@@ -45,7 +47,7 @@ class MortarShot extends Projectile {
     private yVel: number;
 
     private constructor(enemy: Spaceship, speed: number, posX: number, posY: number, sprite: Sprite) {
-        super(speed, posX, posY, sprite);
+        super(enemy, speed, posX, posY, sprite);
 
         const { x, y } = enemy.getCenterPos()
         const distance = Math.sqrt((x - posX)**2 + (y - posY)**2)
@@ -65,3 +67,5 @@ class MortarShot extends Projectile {
         this.sprite.y += this.yVel;
     }
 }
+
+export { Projectile, Bullet, MortarShot }
