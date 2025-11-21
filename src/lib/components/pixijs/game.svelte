@@ -120,6 +120,30 @@
 		};
 	}
 
+	function autoPlay(): string {
+		// random integer between 0 and 99
+		const a = Math.floor(Math.random() * 100);
+		switch (a) {
+			case 1:
+			case 5:
+			case 9:
+			case 13:
+				console.log("AUTOPLAY UP");
+				return "w";
+			case 2:
+			case 6:
+			case 10:
+			case 14:
+				return "a";
+			case 3:
+				return "s";
+			case 4:
+				return "d";
+			default:
+				return "h";
+		}
+	}
+
 	onMount(async () => {
 		(async () => {
 			const { app, rootContainer, parent } = await initPixieApp();
@@ -203,6 +227,7 @@
 			// Main loop
 			app.ticker.add((ticker) => {
 				player.update(ticker, app.screen.width, app.screen.height, enemy, rootContainer);
+				enemy.changeState(new KeyboardEvent("keydown", { key: autoPlay() }), randomBoolean());
 				enemy.update(ticker, app.screen.width, app.screen.height, player, rootContainer);
 			});
 			app.ticker.add((ticker) => {
@@ -225,4 +250,9 @@
 			};
 		})();
 	});
+
+
+	function randomBoolean(): boolean {
+		return Math.random() >= 0.5;
+	}
 </script>
