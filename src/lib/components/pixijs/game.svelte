@@ -165,8 +165,8 @@
 			rootContainer.addChild(playerHealth.container);
 			rootContainer.addChild(enemyHealth.container);
 
-			playerHealth.setHealth(0.5); // 60%
-			enemyHealth.setHealth(0.3); // 30%
+			playerHealth.setHealth(player.health/player.MAX_HEALTH);
+			enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
 
 			// Main loop
 			app.ticker.add((ticker) => {
@@ -174,10 +174,17 @@
 				enemy.update(ticker, app.screen.width, app.screen.height, player, rootContainer);
 			});
 			app.ticker.add((ticker) => {
-				for (const projectile of projectiles) {
-					projectile.move(ticker.deltaTime)
-				}
+				projectiles.forEach((projectile, index) => {
+					const didHit = projectile.move(ticker.deltaTime);
+					if (didHit) {
+						projectiles.splice(index, 1);
+					}
+				})
 			});
+			app.ticker.add((ticker) => {
+				playerHealth.setHealth(player.health/player.MAX_HEALTH);
+				enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
+			})
 
 			// Cleanup on unmount
 			return () => {

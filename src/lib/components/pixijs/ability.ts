@@ -65,7 +65,7 @@ class Shoot extends Ability {
     }
 
     async action(enemy: Spaceship, rootContainer: Container): Promise<void> {
-        const bullet = await Bullet.create(enemy, this.playerType == "friendly" ? "right" : "left", this.player.getCenterPos().x, this.player.getCenterPos().y);
+        const bullet = await Bullet.create(enemy, this.playerType == "friendly" ? "right" : "left", this.player.spaceship_sprite.x, this.player.spaceship_sprite.y);
         this.projectiles.push(bullet);
         rootContainer.addChild(bullet.sprite)
     }

@@ -80,8 +80,12 @@ interface ShipAttachment {
 }
 
 class Spaceship {
+	public readonly MAX_HEALTH = 200;
+
 	type: "friendly" | "enemy";
 	spaceship_sprite: Sprite;
+	health = this.MAX_HEALTH;
+
 	private sprites: Sprite[]; // Used for managing spaceship components
 	private speed = 4;
 
@@ -225,25 +229,31 @@ class Spaceship {
 		this.spaceship_sprite.y += yVel
 
 		// Enforce screen bounds - no going outside
-		if (this.spaceship_sprite.y + this.spaceship_sprite.height > screenHeight) {
-			this.spaceship_sprite.y = screenHeight - this.spaceship_sprite.height;
+		if (this.spaceship_sprite.y + this.spaceship_sprite.height / 2 > screenHeight) {
+			this.spaceship_sprite.y = screenHeight - this.spaceship_sprite.height / 2;
 		}
-		else if (this.spaceship_sprite.y < 0) {
-			this.spaceship_sprite.y = 0;
+		else if (this.spaceship_sprite.y - this.spaceship_sprite.height / 2< 0) {
+			this.spaceship_sprite.y = this.spaceship_sprite.height / 2;
 		}
 
 		if (this.type == "friendly") {
-			this.spaceship_sprite.x = this.spaceship_sprite.x < 0 ? 0 : this.spaceship_sprite.x;
-			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width > screenWidth / 2 ? screenWidth / 2 - this.spaceship_sprite.width : this.spaceship_sprite.x;	
+			this.spaceship_sprite.x = this.spaceship_sprite.x - this.spaceship_sprite.width / 2 < 0 ? this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
+			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width / 2 > screenWidth / 2 ? screenWidth / 2 - this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
 		} else if (this.type == "enemy") {
-			this.spaceship_sprite.x = this.spaceship_sprite.x < screenWidth / 2 ? screenWidth / 2 : this.spaceship_sprite.x;
-			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width > screenWidth ? screenWidth - this.spaceship_sprite.width : this.spaceship_sprite.x;
+			this.spaceship_sprite.x = this.spaceship_sprite.x - this.spaceship_sprite.width / 2 < screenWidth / 2 ? screenWidth / 2 + this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
+			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width / 2 > screenWidth ? screenWidth - this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
 		}
 
 	}
 
-	getCenterPos() {
-		return {x: this.spaceship_sprite.x, y: this.spaceship_sprite.y}
+	public checkForHit(sprite: Sprite, damage: number) {
+		const didHit = (sprite.x < (this.spaceship_sprite.x + this.spaceship_sprite.width / 2) && (sprite.x + sprite.width > this.spaceship_sprite.x - this.spaceship_sprite.width / 2) && sprite.y < (this.spaceship_sprite.y + this.spaceship_sprite.height / 2) && (sprite.y + sprite.height) > this.spaceship_sprite.y - this.spaceship_sprite.width / 2)
+
+		if (didHit) {
+			this.health -= damage;
+		}
+
+		return didHit;
 	}
 }
 
