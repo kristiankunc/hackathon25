@@ -1,14 +1,19 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import Spaceship, { buttonSprites, slotCoordinates, type ShipAttachment } from "./spaceship";
 	import { Application, Assets, Container, Sprite, Ticker, Graphics } from "pixi.js";
-	import Spaceship, { slotCoordinates } from "./spaceship";
 	import type { Projectile } from "./projectile";
 
 	const initPixieApp = async () => {
 		const parent = <HTMLDivElement>document.getElementById("render-div");
 		const app = new Application();
 
-		await app.init({ background: "#000000", resizeTo: parent });
+		await app.init({
+			background: "#000000",
+			width: 1920,
+			height: 1080,
+			resizeTo: parent
+		});
 		parent.appendChild(app.canvas);
 
 		const container = new Container();
@@ -24,23 +29,34 @@
 		return { app, rootContainer: container, parent };
 	};
 
-	const createButtons = async (app: Application) => {
+	const createButtons = async (app: Application, friendlyLoadout: ShipAttachment[]) => {
 		const buttonsContainer = new Container();
 		buttonsContainer.eventMode = "static";
 
-		const shieldTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/19031/19031173.png");
-		const shieldButton = new Sprite(shieldTexture);
+		// shield attachments
+		const shieldAttachments: ShipAttachment[] = friendlyLoadout.filter(
+			(attachment) => attachment && attachment.name && attachment.name.endsWith("_SHIELD")
+		);
 
-		const machinegunTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/7445/7445348.png");
-		const machinegunButton = new Sprite(machinegunTexture);
+		const buttons = [];
 
-		const laserTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/7421/7421037.png");
-		const laserButton = new Sprite(laserTexture);
+		for (const attachment of shieldAttachments) {
+			if (!attachment || !attachment.name) continue;
 
-		const speedTexture = await Assets.load("https://cdn-icons-png.flaticon.com/512/8146/8146004.png");
-		const speedButton = new Sprite(speedTexture);
+			switch (attachment.name) {
+				case "MORAVA_SHIELD":
+					break;
+				case "CECHY_SHIELD":
+					buttons.push(new Sprite(await Assets.load(buttonSprites.METRO.texturePath)));
+					break;
+				case "SLEZSKO_SHIELD":
+					buttons.push(new Sprite(await Assets.load(buttonSprites.ROBBER.texturePath)));
+					break;
+				case "SLOVENSKO_SHIELD":
+					buttons.push(new Sprite(await Assets.load(buttonSprites.SIX.texturePath)));
+			}
+		}
 
-		const buttons = [shieldButton, machinegunButton, laserButton, speedButton];
 		for (let i = 0; i < buttons.length; i++) {
 			buttons[i].setSize(90);
 			buttons[i].position.x = buttons[i].width * i;
@@ -107,21 +123,37 @@
 	onMount(async () => {
 		(async () => {
 			const { app, rootContainer, parent } = await initPixieApp();
-			const buttonsContainer = await createButtons(app);
-			let projectiles: Projectile[] = []
 
-			rootContainer.addChild(buttonsContainer);
-
-			const players = []
-
-			const player = await Spaceship.create("friendly", projectiles, [
+			const friendlyLoadout: ShipAttachment[] = [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
 				{ name: "STEN", position: slotCoordinates.rWing1 },
 				{ name: "BOW", position: slotCoordinates.rWing2 },
 				{ name: "SKODA_ENGINE", position: slotCoordinates.centerBack },
-				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront }
-			]);
+				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront },
+				{
+					name: "SLOVENSKO_SHIELD",
+					position: slotCoordinates.centerBack
+				},
+				{
+					name: "MORAVA_SHIELD",
+					position: slotCoordinates.centerMid
+				},
+				{
+					name: "SLEZSKO_SHIELD",
+					position: slotCoordinates.engine1
+				}
+			];
+
+			let projectiles: Projectile[] = [];
+
+			const players = [];
+
+			const player = await Spaceship.create("friendly", projectiles, friendlyLoadout);
+			const buttonsContainer = await createButtons(app, friendlyLoadout);
+
+			rootContainer.addChild(buttonsContainer);
+
 			const enemy = await Spaceship.create("enemy", projectiles, [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
@@ -139,10 +171,10 @@
 			window.addEventListener("keydown", player.keyboardHandler);
 			window.addEventListener("keyup", player.keyboardHandler);
 
-			player.spaceship_sprite.position.x = 325;
+			player.spaceship_sprite.position.x = app.screen.width / 10;
 			player.spaceship_sprite.position.y = app.screen.height / 2;
 
-			enemy.spaceship_sprite.position.x = app.screen.width - 325;
+			enemy.spaceship_sprite.position.x = app.screen.width - player.spaceship_sprite.position.x;
 			enemy.spaceship_sprite.position.y = app.screen.height / 2;
 
 			rootContainer.addChild(player.spaceship_sprite);
@@ -165,8 +197,8 @@
 			rootContainer.addChild(playerHealth.container);
 			rootContainer.addChild(enemyHealth.container);
 
-			playerHealth.setHealth(player.health/player.MAX_HEALTH);
-			enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
+			playerHealth.setHealth(player.health / player.MAX_HEALTH);
+			enemyHealth.setHealth(enemy.health / enemy.MAX_HEALTH);
 
 			// Main loop
 			app.ticker.add((ticker) => {
@@ -179,12 +211,12 @@
 					if (didHit) {
 						projectiles.splice(index, 1);
 					}
-				})
+				});
 			});
 			app.ticker.add((ticker) => {
-				playerHealth.setHealth(player.health/player.MAX_HEALTH);
-				enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
-			})
+				playerHealth.setHealth(player.health / player.MAX_HEALTH);
+				enemyHealth.setHealth(enemy.health / enemy.MAX_HEALTH);
+			});
 
 			// Cleanup on unmount
 			return () => {
