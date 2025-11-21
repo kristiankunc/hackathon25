@@ -2,6 +2,7 @@
 	import { onMount } from "svelte";
 	import { Application, Assets, Container, Sprite, Ticker, Graphics } from "pixi.js";
 	import Spaceship, { slotCoordinates } from "./spaceship";
+	import type { Projectile } from "./projectile";
 
 	const initPixieApp = async () => {
 		const parent = <HTMLDivElement>document.getElementById("render-div");
@@ -107,10 +108,13 @@
 		(async () => {
 			const { app, rootContainer, parent } = await initPixieApp();
 			const buttonsContainer = await createButtons(app);
+			let projectiles: Projectile[] = []
 
 			rootContainer.addChild(buttonsContainer);
 
-			const player = await Spaceship.create("friendly", [
+			const players = []
+
+			const player = await Spaceship.create("friendly", projectiles, [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
 				{ name: "STEN", position: slotCoordinates.rWing1 },
@@ -118,7 +122,7 @@
 				{ name: "SKODA_ENGINE", position: slotCoordinates.centerBack },
 				{ name: "CECHY_SHIELD", position: slotCoordinates.centerFront }
 			]);
-			const enemy = await Spaceship.create("enemy", [
+			const enemy = await Spaceship.create("enemy", projectiles, [
 				{ name: "LASER", position: slotCoordinates.lWing1 },
 				{ name: "MORTAR", position: slotCoordinates.lWing2 },
 				{ name: "STEN", position: slotCoordinates.rWing1 },
@@ -129,6 +133,8 @@
 				},
 				{ name: "MORAVA_SHIELD", position: slotCoordinates.centerFront }
 			]);
+
+			players.push(player, enemy);
 
 			window.addEventListener("keydown", player.keyboardHandler);
 			window.addEventListener("keyup", player.keyboardHandler);
@@ -159,13 +165,26 @@
 			rootContainer.addChild(playerHealth.container);
 			rootContainer.addChild(enemyHealth.container);
 
-			playerHealth.setHealth(0.5); // 60%
-			enemyHealth.setHealth(0.3); // 30%
+			playerHealth.setHealth(player.health/player.MAX_HEALTH);
+			enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
 
 			// Main loop
 			app.ticker.add((ticker) => {
-				player.move(ticker.deltaTime, app.screen.width, app.screen.height);
+				player.update(ticker, app.screen.width, app.screen.height, enemy, rootContainer);
+				enemy.update(ticker, app.screen.width, app.screen.height, player, rootContainer);
 			});
+			app.ticker.add((ticker) => {
+				projectiles.forEach((projectile, index) => {
+					const didHit = projectile.move(ticker.deltaTime);
+					if (didHit) {
+						projectiles.splice(index, 1);
+					}
+				})
+			});
+			app.ticker.add((ticker) => {
+				playerHealth.setHealth(player.health/player.MAX_HEALTH);
+				enemyHealth.setHealth(enemy.health/enemy.MAX_HEALTH);
+			})
 
 			// Cleanup on unmount
 			return () => {

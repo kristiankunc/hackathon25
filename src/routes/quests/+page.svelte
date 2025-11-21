@@ -14,15 +14,21 @@
 	<div class="w-full max-w-md space-y-4 rounded-sm bg-background-950 p-6">
 		<button
 			onclick={() => goto("quests/bug-fixing")}
-			class="w-full rounded-sm bg-primary p-4 font-semibold text-background transition-colors hover:bg-primary-600"
+			class="w-full cursor-pointer rounded-sm bg-primary p-4 font-semibold text-background transition-colors hover:bg-primary-600"
 		>
 			Bug Fixing Quest
 		</button>
 		<button
 			onclick={() => goto("quests/real-or-fake")}
-			class="w-full rounded-sm bg-primary p-4 font-semibold text-background transition-colors hover:bg-primary-600"
+			class=" w-full cursor-pointer rounded-sm bg-primary p-4 font-semibold text-background transition-colors hover:bg-primary-600"
 		>
 			Real or Fake
+		</button>
+		<button
+			onclick={() => goto("quests/meth")}
+			class=" w-full cursor-pointer rounded-sm bg-primary p-4 font-semibold text-background transition-colors hover:bg-primary-600"
+		>
+			Math Challenge
 		</button>
 	</div>
 </div>

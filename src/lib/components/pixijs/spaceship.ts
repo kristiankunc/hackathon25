@@ -1,4 +1,6 @@
-import { Assets, Sprite } from "pixi.js";
+import { Assets, Container, Sprite, Ticker } from "pixi.js";
+import { MortarShot, type Projectile } from "./projectile";
+import { Shoot, type Ability } from "./ability";
 
 const spritesData = {
 	LASER: {
@@ -78,19 +80,31 @@ interface ShipAttachment {
 }
 
 class Spaceship {
+	public readonly MAX_HEALTH = 200;
+
 	type: "friendly" | "enemy";
 	spaceship_sprite: Sprite;
+	health = this.MAX_HEALTH;
+
 	private sprites: Sprite[]; // Used for managing spaceship components
 	private speed = 4;
+
+	private projectiles: Projectile[];
+
 	private movingUp: boolean | undefined;
 	private movingDown: boolean | undefined;
 	private movingRight: boolean | undefined;
 	private movingLeft: boolean | undefined;
 
-	private constructor(type: "friendly" | "enemy", spaceship_sprite: Sprite, sprites: Map<string, Sprite>, config: ShipAttachment[]) {
+	private shoot: Ability;
+
+	private constructor(type: "friendly" | "enemy", projectiles: Projectile[], spaceship_sprite: Sprite, sprites: Map<string, Sprite>, config: ShipAttachment[]) {
 		this.type = type;
 		this.spaceship_sprite = spaceship_sprite;
 		this.sprites = Array.from(sprites.values());
+		this.projectiles = projectiles;
+
+		this.shoot = new Shoot(this, type, projectiles);
 
 		const shipWidth = spaceship_sprite.texture.width;
 		const shipHeight = spaceship_sprite.texture.height;
@@ -124,7 +138,7 @@ class Spaceship {
 		}
 	}
 
-	static async create(type: "friendly" | "enemy", config: ShipAttachment[]): Promise<Spaceship> {
+	static async create(type: "friendly" | "enemy", projectiles: Projectile[], config: ShipAttachment[]): Promise<Spaceship> {
 		const spaceship_texture = await Assets.load("/assets/ship.png");
 		const spaceship_sprite = new Sprite(spaceship_texture);
 
@@ -146,11 +160,10 @@ class Spaceship {
 			sprites.set(attachment.name, sprite);
 		}
 
-		return new Spaceship(type, spaceship_sprite, sprites, config);
+		return new Spaceship(type, projectiles, spaceship_sprite, sprites, config);
 	}
 
 	changeState(event: KeyboardEvent, type: boolean) {
-		console.log("Keyboard event", type);
 		switch (event.key) {
 			case "w":
 				this.movingUp = type;
@@ -164,11 +177,13 @@ class Spaceship {
 			case "d":
 				this.movingRight = type;
 				break;
+			case "h":
+				console.log("[+] Shoot pressed: ", this.type)
+				this.shoot.activate()
 		}
 	}
 
 	keyboardHandler = (event: KeyboardEvent) => {
-		console.log("Keyboard event", event.type);
 		switch (event.type) {
 			case "keydown":
 				this.changeState(event, true);
@@ -179,34 +194,66 @@ class Spaceship {
 		}
 	};
 
-	move(deltaTime: number, screenWidth: number, screenHeight: number) {
-		// Apply movement
+	update(ticker: Ticker, screenWidth: number, screenHeight: number, enemy: Spaceship, rootContainer: Container) {
+		this.move(ticker.deltaTime, screenWidth, screenHeight);
+		this.updateAbilities(ticker.deltaMS * 0.001, enemy, rootContainer);
+	}
+
+	private updateAbilities(deltaMS: number, enemy: Spaceship, rootContainer: Container) {
+		this.shoot.tick(deltaMS, enemy, rootContainer);
+	}
+
+	private move(deltaTime: number, screenWidth: number, screenHeight: number) {
+		let xVel = 0;
+		let yVel = 0;
+
 		if (this.movingUp) {
-			this.spaceship_sprite.y -= this.speed * deltaTime;
+			yVel -= this.speed * deltaTime;
 		}
 		if (this.movingDown) {
-			this.spaceship_sprite.y += this.speed * deltaTime;
+			yVel += this.speed * deltaTime;
 		}
 		if (this.movingLeft) {
-			this.spaceship_sprite.x -= this.speed * deltaTime;
+			xVel -= this.speed * deltaTime;
 		}
 		if (this.movingRight) {
-			this.spaceship_sprite.x += this.speed * deltaTime;
+			xVel += this.speed * deltaTime;
 		}
 
+		if (Math.sqrt(xVel**2 + yVel**2) > this.speed) {
+			xVel *= Math.cos(Math.PI/4);
+			yVel *= Math.sin(Math.PI/4);
+		}
+
+		this.spaceship_sprite.x += xVel
+		this.spaceship_sprite.y += yVel
+
 		// Enforce screen bounds - no going outside
-		if (this.spaceship_sprite.x < 150) {
-			this.spaceship_sprite.x = 150;
+		if (this.spaceship_sprite.y + this.spaceship_sprite.height / 2 > screenHeight) {
+			this.spaceship_sprite.y = screenHeight - this.spaceship_sprite.height / 2;
 		}
-		if (this.spaceship_sprite.x > screenWidth / 4) {
-			this.spaceship_sprite.x = screenWidth / 4;
+		else if (this.spaceship_sprite.y - this.spaceship_sprite.height / 2< 0) {
+			this.spaceship_sprite.y = this.spaceship_sprite.height / 2;
 		}
-		if (this.spaceship_sprite.y < 140) {
-			this.spaceship_sprite.y = 140;
+
+		if (this.type == "friendly") {
+			this.spaceship_sprite.x = this.spaceship_sprite.x - this.spaceship_sprite.width / 2 < 0 ? this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
+			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width / 2 > screenWidth / 2 ? screenWidth / 2 - this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
+		} else if (this.type == "enemy") {
+			this.spaceship_sprite.x = this.spaceship_sprite.x - this.spaceship_sprite.width / 2 < screenWidth / 2 ? screenWidth / 2 + this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
+			this.spaceship_sprite.x = this.spaceship_sprite.x + this.spaceship_sprite.width / 2 > screenWidth ? screenWidth - this.spaceship_sprite.width / 2 : this.spaceship_sprite.x;
 		}
-		if (this.spaceship_sprite.y > screenHeight - 140) {
-			this.spaceship_sprite.y = screenHeight - 140;
+
+	}
+
+	public checkForHit(sprite: Sprite, damage: number) {
+		const didHit = (sprite.x < (this.spaceship_sprite.x + this.spaceship_sprite.width / 2) && (sprite.x + sprite.width > this.spaceship_sprite.x - this.spaceship_sprite.width / 2) && sprite.y < (this.spaceship_sprite.y + this.spaceship_sprite.height / 2) && (sprite.y + sprite.height) > this.spaceship_sprite.y - this.spaceship_sprite.width / 2)
+
+		if (didHit) {
+			this.health -= damage;
 		}
+
+		return didHit;
 	}
 }
 
