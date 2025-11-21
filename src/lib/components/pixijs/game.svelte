@@ -150,7 +150,7 @@
 	function displayGameOver(winner: "player" | "enemy") {
 		const parent = document.getElementById("render-div") || document.body;
 		if (!parent) return;
-		if (document.getElementById("game-over-overlay")) return; // already shown
+		if (document.getElementById("game-over-overlay")) return;
 
 		const overlay = document.createElement("div");
 		overlay.id = "game-over-overlay";
@@ -164,6 +164,13 @@
 			zIndex: "9999"
 		});
 
+		// WRAPPER (kvůli absolute pozicím)
+		const wrapper = document.createElement("div");
+		Object.assign(wrapper.style, {
+			position: "relative",
+			padding: "40px", // prostor kolem modalu, aby se výbuch nevlezl přes něj
+		});
+
 		const modal = document.createElement("div");
 		Object.assign(modal.style, {
 			background: "#111",
@@ -172,7 +179,9 @@
 			borderRadius: "8px",
 			minWidth: "320px",
 			textAlign: "center",
-			boxShadow: "0 6px 24px rgba(0,0,0,0.6)"
+			boxShadow: "0 6px 24px rgba(0,0,0,0.6)",
+			position: "relative",
+			zIndex: "2"
 		});
 
 		const title = document.createElement("h2");
@@ -193,9 +202,7 @@
 		const restartBtn = document.createElement("button");
 		restartBtn.textContent = "Restart";
 		Object.assign(restartBtn.style, { padding: "8px 12px", cursor: "pointer" });
-		restartBtn.addEventListener("click", () => {
-			window.location.reload();
-		});
+		restartBtn.addEventListener("click", () => window.location.reload());
 
 		const closeBtn = document.createElement("a");
 		closeBtn.textContent = "Main menu";
@@ -207,24 +214,43 @@
 
 		buttons.append(restartBtn, closeBtn);
 		modal.append(title, msg, buttons);
-		overlay.appendChild(modal);
 
-		(parent as HTMLElement).appendChild(overlay);
+		// EXPLOSION ABSOLUTELY POSITIONED
+		const explosion = document.createElement("img");
+		explosion.src = "/assets/boom.gif";
+		Object.assign(explosion.style, {
+			position: "absolute",
+			top: "50%",
+			transform: "translateY(-50%)",
+			width: "380px",
+			zIndex: "1"
+		});
 
-		// // click outside to close
-		// overlay.addEventListener("click", (e) => {
-		// 	if (e.target === overlay) overlay.remove();
-		// });
+		if (winner === "player") {
+			explosion.style.right = "-130%";
+		} else {
+			explosion.style.left = "-130%";
+		}
+
+		wrapper.appendChild(modal);
+		wrapper.appendChild(explosion);
+		overlay.appendChild(wrapper);
+
+		parent.appendChild(overlay);
 	}
+
 
 	function checkGameOver(playerHealth: number, enemyHealth: number) {
 		if (playerHealth <= 0 && !gameOver) {
 			gameOver = true;
 			displayGameOver("enemy");
+			return "enemy";
 		} else if (enemyHealth <= 0 && !gameOver) {
 			gameOver = true;
 			displayGameOver("player");
+			return "player";
 		}
+		return null;
 	}
 
 	onMount(async () => {
@@ -327,8 +353,14 @@
 			});
 
 			app.ticker.add(() => {
-				if (gameOver) return;
-				checkGameOver(player.health, enemy.health);
+
+				let result = checkGameOver(player.health, enemy.health);
+				
+				if (result == "player") {
+					enemy.spaceship_sprite.destroy();
+				} else if (result == "enemy") {
+					player.spaceship_sprite.destroy();
+				}
 			});
 
 			// Cleanup on unmount
